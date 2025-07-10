@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication  // ← 이 애노테이션이 핵심입니다!
 public class AniwellProjectApplication {
 
-	
+
     public static void main(String[] args) {
         SpringApplication.run(AniwellProjectApplication.class, args);
     }
