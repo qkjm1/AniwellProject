@@ -1,0 +1,9 @@
+body {
+	background: linear-gradient(to bottom, #e4f0b9, #fcdca9);
+}
+
+.main_page {
+	border-top-left-radius: 40px;
+	border-bottom-left-radius: 40px;
+	background-color: white;
+}
