@@ -43,4 +43,6 @@ public interface ArticleRepository {
     public int getGoodRP(int relId);
 
     public int getBadRP(int relId);
+
+    List<Article> findAll();
 }

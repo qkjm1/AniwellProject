@@ -1,4 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%
+  Integer loginedMemberId = (Integer) request.getAttribute("loginedMemberId");
+  if (loginedMemberId == null || loginedMemberId == 0) {
+%>
+<script>
+  alert("질문 등록은 로그인 후 이용할 수 있습니다.");
+  location.href = "/usr/member/login?redirectUrl=/usr/qna/ask";
+</script>
+<%
+    return;
+  }
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,11 +51,11 @@
     const formData = $(this).serialize();
 
     $.post('/usr/qna/doAsk', formData, function (data) {
-      if (data.resultCode.startsWith('S-')) {
+      if (data.resultCode && data.resultCode.startsWith('S-')) {
         alert(data.msg);
         location.href = '/usr/qna/list';
       } else {
-        alert(data.msg);
+        alert(data.msg || "질문 등록에 실패했습니다.");
       }
     });
   });

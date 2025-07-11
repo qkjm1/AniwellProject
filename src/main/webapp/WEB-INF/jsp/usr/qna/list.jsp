@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@ include file="/WEB-INF/jsp/usr/common/head.jspf" %>
@@ -53,7 +53,11 @@
     <div class="w-1/4 bg-white p-6 rounded-xl shadow h-[500px] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-bold">🙋 내 질문 목록</h2>
-            <a href="/usr/qna/ask" class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">질문 등록</a>
+            <c:set var="isLogined" value="${isLogined}"/>
+            <button id="askBtn" type="button"
+                    class="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                질문 등록
+            </button>
         </div>
 
         <ul class="space-y-3 text-sm text-gray-700">
@@ -77,6 +81,19 @@
     </div>
 
 </div>
+
+<script>
+    document.getElementById('askBtn').addEventListener('click', function () {
+        const isLogined = "${isLogined}" === "true";
+
+        if (!isLogined) {
+            alert("로그인 후 이용해주세요.");
+            location.href = "/usr/member/login?afterLoginUri=" + encodeURIComponent("/usr/qna/ask");
+        } else {
+            location.href = "/usr/qna/ask";
+        }
+    });
+</script>
 
 
 </body>

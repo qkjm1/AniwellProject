@@ -55,17 +55,19 @@ a.button {
 				<tr>
 					<td>${crew.id}</td>
 					<td>${crew.title}</td>
-					<td>${crew.districtId}</td>
+					<td>${crew.city}</td>
+					<!-- ✅ 시 표시 -->
 					<td>${crew.leaderId}</td>
 					<td>
-						<fmt:formatDate value="${createdDate}" pattern="yyyy-MM-dd HH:mm:ss" />
-
+						<fmt:formatDate value="${crew.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" />
+						<!-- ✅ 수정됨 -->
 					</td>
 					<td>
 						<a href="/usr/walkCrew/detail/${crew.id}" class="button">보기</a>
 					</td>
 				</tr>
 			</c:forEach>
+
 			<c:if test="${empty crews}">
 				<tr>
 					<td colspan="6">등록된 크루가 없습니다.</td>

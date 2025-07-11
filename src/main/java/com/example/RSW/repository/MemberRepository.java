@@ -32,8 +32,7 @@ public interface MemberRepository {
 
 	void updateAuthLevel(int memberId, int authLevel);
 
-	List<Member> findAllWithVetCert();
-
-	List<Member> getForPrintMembers(@Param("searchType") String searchType, @Param("searchKeyword") String searchKeyword);
+	List<Member> getForPrintMembersWithCert(@Param("searchType") String searchType,
+											@Param("searchKeyword") String searchKeyword);
 
 }

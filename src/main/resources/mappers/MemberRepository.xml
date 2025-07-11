@@ -104,36 +104,34 @@
         WHERE id = #{memberId}
     </update>
 
-    <select id="findAllWithVetCert" resultType="com.example.RSW.vo.Member">
+    <select id="getForPrintMembersWithCert"
+            resultType="com.example.RSW.vo.Member">
         SELECT m.*,
-               v.filePath AS vetCertUrl,
-               v.approved AS vetCertApproved
+        v.filePath AS vetCertUrl,
+        v.approved AS vetCertApproved
         FROM member m
-                 LEFT JOIN vet_certificate v ON m.id = v.memberId
+        LEFT JOIN vet_certificate v ON m.id = v.memberId
+        <where>
+            <if test="searchType != null and searchKeyword != null and searchKeyword != ''">
+                <choose>
+                    <when test="searchType == 'authLevel'">
+                        m.authLevel = #{searchKeyword}
+                    </when>
+                    <when test="searchType == 'loginId'">
+                        m.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'name'">
+                        m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'id'">
+                        m.id = #{searchKeyword}
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY m.id DESC
     </select>
 
-    <select id="getForPrintMembers" resultType="com.example.RSW.vo.Member">
-        SELECT *
-        FROM member
-        WHERE 1 = 1
-        <if test="searchType != null and searchKeyword != null and searchKeyword != ''">
-            <choose>
-                <when test="searchType == 'authLevel'">
-                    AND authLevel = #{searchKeyword}
-                </when>
-                <when test="searchType == 'loginId'">
-                    AND loginId LIKE CONCAT('%', #{searchKeyword}, '%')
-                </when>
-                <when test="searchType == 'name'">
-                    AND name LIKE CONCAT('%', #{searchKeyword}, '%')
-                </when>
-                <when test="searchType == 'id'">
-                    AND id = #{searchKeyword}
-                </when>
-            </choose>
-        </if>
-        ORDER BY id DESC
-    </select>
 
 
 

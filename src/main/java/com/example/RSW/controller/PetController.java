@@ -1,29 +1,29 @@
 package com.example.RSW.controller;
 
-import com.example.RSW.service.PetAnalysisService;
-import com.example.RSW.service.PetService;
-import com.example.RSW.service.PetVaccinationService;
+import com.example.RSW.service.*;
 import com.example.RSW.util.Ut;
 import com.example.RSW.vo.*;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 
 @Controller
 public class PetController {
@@ -35,15 +35,61 @@ public class PetController {
     private PetService petService;
 
     @Autowired
+    private WalkCrewService walkCrewService;
+
+    @Autowired
     private PetVaccinationService petVaccinationService;
 
     @Autowired
     private PetAnalysisService petAnalysisService;
 
+    @Autowired
+    private CalendarEventService calendarEventService;
+
+
+    @RequestMapping("/usr/pet/petPage")
+    public String showTest(@RequestParam("petId") int petId, Model model) throws Exception{
+        Pet pet = petService.getPetsById(petId);
+        model.addAttribute("pet", pet);
+
+        List<PetVaccination> list = petVaccinationService.getVaccinationsByPetId(petId);
+
+        List<Map<String, Object>> events = new ArrayList<>();
+        for (PetVaccination pv : list) {
+            // ✅ 1. 접종 이벤트
+            Map<String, Object> injEvent = new HashMap<>();
+            injEvent.put("id", pv.getId());
+            injEvent.put("title", pv.getVaccineName() + " 접종");
+            injEvent.put("start", pv.getInjectionDate().toString());
+            injEvent.put("color", "#4caf50");
+
+            events.add(injEvent);
+
+            // ✅ 2. 다음 예정 이벤트 (nextDueDate가 null이 아닐 때만)
+            if (pv.getNextDueDate() != null) {
+                Map<String, Object> nextEvent = new HashMap<>();
+                nextEvent.put("id", pv.getId());
+                nextEvent.put("title", pv.getPetName() + " - " + pv.getVaccineName() + " 다음 예정");
+                nextEvent.put("start", pv.getNextDueDate().toString());
+                nextEvent.put("color", "#f44336");
+
+                events.add(nextEvent);
+            }
+        }
+
+        // ✅ JSON으로 변환하여 JSP에 전달
+        ObjectMapper objectMapper = new ObjectMapper();
+        String eventsJson = objectMapper.writeValueAsString(events);
+        model.addAttribute("eventsJson", eventsJson);
+        return "/usr/pet/petPage"; // JSP or Thymeleaf 페이지
+    }
     @RequestMapping("/usr/pet/list")
     public String showPetList(@RequestParam("memberId") int memberId, Model model) {
         List<Pet> pets = petService.getPetsByMemberId(memberId);
+        List<WalkCrew> crews = walkCrewService.getWalkCrews(memberId);
+
         model.addAttribute("pets", pets);
+        model.addAttribute("crews", crews);
         return "usr/pet/list"; // JSP or Thymeleaf 페이지
     }
 
@@ -170,45 +216,103 @@ public class PetController {
         return Ut.jsReplace(modifyRd.getResultCode(), modifyRd.getMsg(), "../pet/list?memberId=" + id);
     }
 
-    @RequestMapping("/usr/pet/vaccination")
-    public String showPetVaccination(@RequestParam("petId") int petId, Model model) throws Exception {
-        List<PetVaccination> list = petVaccinationService.getVaccinationsByPetId(petId);
-
-        List<Map<String, Object>> events = new ArrayList<>();
-        for (PetVaccination pv : list) {
-            // ✅ 접종 이벤트
-            Map<String, Object> injEvent = new HashMap<>();
-            injEvent.put("id", pv.getId());  // ← 반드시 추가
-            injEvent.put("title", pv.getPetName() + " - " + pv.getVaccineName() + " 접종");
-            injEvent.put("start", pv.getInjectionDate().toString());
-            injEvent.put("color", "#4caf50");
-
-            // ✅ 다음 예정 이벤트
-            Map<String, Object> nextEvent = new HashMap<>();
-            nextEvent.put("id", pv.getId());  // ← 반드시 추가
-            nextEvent.put("title", pv.getPetName() + " - " + pv.getVaccineName() + " 다음 예정");
-            nextEvent.put("start", pv.getNextDueDate().toString());
-            nextEvent.put("color", "#f44336");
-
-            events.add(injEvent);
-            events.add(nextEvent);
-        }
-
-        // ✅ JSON으로 변환하여 JSP에 전달
-        ObjectMapper objectMapper = new ObjectMapper();
-        String eventsJson = objectMapper.writeValueAsString(events);
-        model.addAttribute("eventsJson", eventsJson);
-
-        return "usr/pet/vaccination";  // 👉 JSP 파일 경로
-    }
-
 
     @RequestMapping("/usr/pet/analysis")
-    public String showAnalysis(@RequestParam("petId") int petId, Model model) {
-        List<PetAnalysis> analysisList = petAnalysisService.getAnalysisByPetId(petId);
-        model.addAttribute("analysisList", analysisList);
-        return "usr/pet/analysis"; // JSP 경로
+    public String showAnalysisForm() {
+        return "usr/pet/emotion";  // 분석 요청 form (이미지 경로 선택)
     }
+
+    @RequestMapping("/usr/pet/gallery")
+    public String showGallery(@RequestParam("petId") int petId, Model model) {
+        List<PetAnalysis> analysisList = petAnalysisService.getAnalysisByPetId(petId);
+
+        model.addAttribute("analysisList", analysisList);
+        return "usr/pet/gallery";  // 분석 요청 form (이미지 경로 선택)
+    }
+
+    @PostMapping("/usr/pet/analysis/do")
+    @ResponseBody
+    public Map<String, Object> doAnalysis(
+            @RequestParam("petId") int petId,
+            @RequestParam("species") String species,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+
+        Map<String, Object> result = new HashMap<>();
+        try {
+            // 1. 이미지 저장
+            String saveDir = "/Users/e-suul/Desktop/aniwell_uploads/";
+            String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+            File savedFile = new File(saveDir + fileName);
+            imageFile.transferTo(savedFile);
+
+            // 2. 종에 따라 파이썬 실행 파일 선택
+            String scriptPath;
+            if ("강아지".equals(species)) {
+                scriptPath = "/Users/e-suul/Desktop/ESeul-main/dog_test.py";
+            } else {
+                scriptPath = "/Users/e-suul/Desktop/ESeul-main/cat_test.py";
+            }
+
+            // 3. 파이썬 실행
+            String command = "python3 " + scriptPath + " " + savedFile.getAbsolutePath();
+            Process process = Runtime.getRuntime().exec(command);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"));
+            String line;
+            String lastLine = null;
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println("🐍 Python output: " + line);
+                lastLine = line;
+            }
+
+            process.waitFor();
+            System.out.println("✅ 파이썬 종료 코드: " + process.exitValue());
+            System.out.println("⚠ 최종 파이썬 결과 문자열: " + lastLine);
+
+            if (lastLine == null || !lastLine.trim().startsWith("{")) {
+                throw new RuntimeException("❌ 파이썬 실행 실패 또는 JSON 형식 아님");
+            }
+
+            // 4. JSON 파싱
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(lastLine);
+            String emotion = root.get("emotion").asText();
+            double confidence = root.get("probabilities").get(emotion).asDouble();
+
+            // 5. DB 저장
+            PetAnalysis analysis = new PetAnalysis();
+            analysis.setPetId(petId);
+            analysis.setImagePath("/uploads/" + fileName);
+            analysis.setEmotionResult(emotion);
+            analysis.setConfidence(confidence);
+            petAnalysisService.save(analysis);
+
+            // 6. 응답 반환
+            result.put("emotionResult", emotion);
+            result.put("confidence", String.format("%.2f", confidence));
+            result.put("imagePath", "/uploads/" + fileName);
+
+            // 🔥 감정별 확률 map 추가
+            Map<String, Double> probabilities = new HashMap<>();
+            root.get("probabilities").fields().forEachRemaining(entry -> {
+                probabilities.put(entry.getKey(), entry.getValue().asDouble());
+            });
+            result.put("probabilities", probabilities);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("emotionResult", "error");
+            result.put("confidence", "0");
+            result.put("imagePath", "");
+        }
+
+        return result;
+    }
+
+
+
+
 
     @ResponseBody
     @RequestMapping("/usr/pet/delete")
@@ -296,4 +400,70 @@ public class PetController {
         ResultData deleteRd = petVaccinationService.deletePetVaccination(vaccinationId);
         return "jsReplace('/usr/pet/vaccination?petId=" + id + "', '삭제가 완료되었습니다.');";
     }
+
+    @RequestMapping("/usr/pet/daily")
+    public String showDaily(@RequestParam("petId") int petId, Model model) {
+        List<CalendarEvent> events = calendarEventService.getEventsByPetId(petId);
+        model.addAttribute("events", events);
+        model.addAttribute("petId", petId); // 👉 jsp에서 다시 요청 시 필요
+        return "usr/pet/daily";  // 상세보기 jsp
+    }
+
+    @RequestMapping("/usr/pet/daily/write")
+    @ResponseBody
+    public String addEvent(@RequestParam("petId") int petId,
+                           @RequestParam("eventDate") String eventDateStr,
+                           @RequestParam("content") String content) {
+
+        if (Ut.isEmptyOrNull(content)) {
+            return Ut.jsHistoryBack("F-1", "내용을 입력하세요");
+        }
+
+        if (Ut.isEmptyOrNull(eventDateStr)) {
+            return Ut.jsHistoryBack("F-1", "날짜를 입력하세요");
+        }
+
+        LocalDate eventDate = LocalDate.parse(eventDateStr); // 문자열 → 날짜
+
+        ResultData doWriteRd = calendarEventService.insert(rq.getLoginedMemberId(), eventDate, petId, content);
+
+        return Ut.jsReplace(doWriteRd.getResultCode(), doWriteRd.getMsg(), "/usr/pet/daily?petId=" + petId);
+    }
+
+    @RequestMapping("/usr/pet/daily/domodify")
+    @ResponseBody
+    public String updateEvent(@RequestParam("id") int id,
+                              @RequestParam("eventDate") String eventDateStr,
+                              @RequestParam("content") String content) {
+
+        if (Ut.isEmptyOrNull(content)) {
+            return Ut.jsHistoryBack("F-1", "내용을 입력하세요");
+        }
+
+        CalendarEvent calendarEvent = calendarEventService.getEventsById(id);
+        if (calendarEvent == null) {
+            return Ut.jsHistoryBack("F-1", "해당 게시글은 존재하지 않습니다.");
+        }
+
+        LocalDate eventDate = LocalDate.parse(eventDateStr);
+
+        ResultData doModifyRd = calendarEventService.update(id, eventDate, content);
+
+        return Ut.jsReplace(doModifyRd.getResultCode(), doModifyRd.getMsg(), "/usr/pet/daily?petId=" + calendarEvent.getPetId());
+    }
+
+    @RequestMapping("/usr/pet/daily/delete")
+    @ResponseBody
+    public String deleteEvent(@RequestParam("id") int id) {
+        CalendarEvent calendarEvent = calendarEventService.getEventsById(id);
+        if (calendarEvent == null) {
+            return Ut.jsHistoryBack("F-1", "해당 게시글은 존재하지 않습니다.");
+        }
+
+        calendarEventService.delete(id);
+
+        return Ut.jsReplace("S-1", "삭제가 완료되었습니다.", "/usr/pet/daily?petId=" + calendarEvent.getPetId());
+    }
+
+
 }

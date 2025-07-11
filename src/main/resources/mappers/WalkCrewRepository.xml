@@ -9,20 +9,28 @@
 	<insert id="insert">
 		INSERT INTO walk_crew
 		SET title = #{title},
-		descriptoin = #{descriptoin},
-		city = #{city},
-		district = #{district},
-		dong = #{dong},
-		leaderId = #{leaderId},
+		description = #{description},
+		district_id = #{districtId},
+		leaderId =
+		#{leaderId},
 		createdAt = NOW()
 	</insert>
 
 
 	<!-- 크루 단건 조회 -->
 	<select id="findById" resultType="com.example.RSW.vo.WalkCrew">
-		SELECT * FROM walk_crew WHERE
-		id = #{id}
+		SELECT
+		id,
+		title,
+		description,
+		district_id AS districtId,
+		leaderId,
+		createdAt
+		FROM walk_crew
+		WHERE id =
+		#{id}
 	</select>
+
 
 	<!-- 지역별 크루 리스트 -->
 	<select id="findByArea" resultType="com.example.RSW.vo.WalkCrew">
@@ -39,8 +47,8 @@
 	<update id="update">
 		UPDATE walk_crew
 		SET title = #{title},
-		descriptoin =
-		#{descriptoin},
+		description =
+		#{description},
 		area = #{area},
 		leaderId = #{leaderId}
 		WHERE id = #{id}
@@ -50,5 +58,27 @@
 	<delete id="deleteById">
 		DELETE FROM walk_crew WHERE id = #{id}
 	</delete>
+
+	<insert id="insertMemberToCrew">
+		INSERT INTO walk_crew_member
+		SET memberId =
+		#{memberId},
+		crewId = #{crewId},
+		joinedAt = NOW()
+	</insert>
+
+	<select id="getAllCrews"
+		resultType="com.example.RSW.vo.WalkCrew">
+		SELECT w.*, d.city
+		FROM walk_crew w
+		JOIN district d ON w.district_id = d.id
+		ORDER BY w.createdAt DESC
+	</select>
+
+
+	<select id="getWalkCrews" resultType="com.example.RSW.vo.WalkCrew">
+		SELECT * FROM walk_crew WHERE id = #{memberId}
+	</select>
+
 
 </mapper>

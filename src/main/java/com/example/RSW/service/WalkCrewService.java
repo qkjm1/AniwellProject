@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.example.RSW.repository.BoardRepository;
+import com.example.RSW.repository.DistrictRepository;
 import com.example.RSW.repository.MemberRepository;
 import com.example.RSW.repository.WalkCrewRepository;
 import com.example.RSW.util.Ut;
+import com.example.RSW.vo.District;
 import com.example.RSW.vo.Member;
 import com.example.RSW.vo.ResultData;
 import com.example.RSW.vo.WalkCrew;
@@ -16,12 +19,15 @@ import com.example.RSW.vo.WalkCrew;
 @Service
 public class WalkCrewService {
 
+	@Autowired
+	private DistrictRepository districtRepository;
+
 	private final WalkCrewRepository walkCrewRepository;
 
 	public WalkCrewService(WalkCrewRepository walkCrewRepository) {
 		this.walkCrewRepository = walkCrewRepository;
 	}
-              
+
 	// 크루 등록
 	public void createCrew(WalkCrew walkCrew) {
 		walkCrewRepository.insert(walkCrew);
@@ -51,4 +57,13 @@ public class WalkCrewService {
 	public void deleteCrew(int id) {
 		walkCrewRepository.deleteById(id);
 	}
+
+
+	public void joinCrew(int memberId, int crewId) {
+		walkCrewRepository.insertMemberToCrew(memberId, crewId);
+	}
+
+
+	public List<WalkCrew> getWalkCrews(int memberId) { return walkCrewRepository.getWalkCrews(memberId);}
+
 }

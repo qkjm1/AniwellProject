@@ -75,10 +75,12 @@
                     <div class="dropdown dropdown-hover">
                         <div tabindex="0" role="button" class="text-red-600 font-bold">관리자</div>
                         <ul class="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow">
+                            <li><a href="/adm/home/main">관리자 마이페이지</a></li>
                             <li><a href="/adm/qna/list">QnA 관리</a></li>
                             <li><a href="/adm/member/list">회원 관리</a></li>
                             <li><a href="/adm/article/list">게시글 관리</a></li>
                         </ul>
+
                     </div>
                 </li>
             </c:if>

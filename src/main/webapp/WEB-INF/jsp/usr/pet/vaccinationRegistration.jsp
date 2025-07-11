@@ -1,9 +1,16 @@
-<!-- 백신 등록 폼 예시 (AJAX로 삽입됨) -->
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+  <title>백신 등록</title>
+</head>
+<body>
+
+
 <div class="vaccine-card" id="addVaccineCard">
   <button class="btn-close">❌</button>
-  <h3>🆕 백신 정보 등록</h3>
-
   <form id="addForm">
+
+    <input type="hidden" name="petId" value="${param.petId}" />
     <ul class="vaccine-info">
       <li>
         <strong>백신 이름:</strong>
@@ -24,10 +31,7 @@
         <strong>접종 날짜:</strong>
         <input type="date" name="injectionDate" required />
       </li>
-      <li>
-        <strong>다음 접종 예정일:</strong>
-        <input type="date" name="nextDueDate" />
-      </li>
+
       <li>
         <strong>비고:</strong>
         <textarea name="notes" rows="3"></textarea>
@@ -40,3 +44,5 @@
     </div>
   </form>
 </div>
+</body>
+</html>

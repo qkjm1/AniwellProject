@@ -164,10 +164,11 @@
       <button type="button" class="next-button" onclick="goToStep(2)">다음</button>
     </div>
 
+
     <!-- STEP 2 -->
     <div class="form-step" id="step2">
       <h2>Contact Info</h2>
-      <input type="text" name="cellphoneNum" placeholder="PHONE NUMBER (000-0000-0000)" required>
+      <input type="text" name="cellphone" placeholder="PHONE NUMBER (000-0000-0000)" required>
       <input type="email" name="email" placeholder="EMAIL" required>
       <input type="text" name="address" placeholder="ADDRESS" required>
 

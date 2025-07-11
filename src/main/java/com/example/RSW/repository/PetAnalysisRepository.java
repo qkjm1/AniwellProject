@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface PetAnalysisRepository {
     List<PetAnalysis> getAnalysisByPetId(int petId);
+
+    void insertAnalysis(PetAnalysis analysis);
 }

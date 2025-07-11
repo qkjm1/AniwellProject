@@ -192,4 +192,14 @@
                                 #{relId}
     </select>
 
+    <select id="findAll" resultType="Article">
+        SELECT A.*,
+               M.nickname AS extra__writer
+        FROM article AS A
+                 INNER JOIN member AS M
+                            ON A.memberId = M.id
+        ORDER BY A.id DESC
+    </select>
+
+
 </mapper>

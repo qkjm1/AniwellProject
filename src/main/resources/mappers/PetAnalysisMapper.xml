@@ -12,4 +12,9 @@
         ORDER BY analyzedAt DESC
     </select>
 
+    <insert id="insertAnalysis" parameterType="com.example.RSW.vo.PetAnalysis">
+        INSERT INTO pet_analysis (petId, imagePath, emotionResult, confidence, analyzedAt)
+        VALUES (#{petId}, #{imagePath}, #{emotionResult}, #{confidence}, NOW())
+    </insert>
+
 </mapper>

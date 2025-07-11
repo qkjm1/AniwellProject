@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -71,11 +71,30 @@
                     </c:otherwise>
                 </c:choose>
             </td>
+
             <td class="border px-2 py-1">
                 <c:choose>
                     <c:when test="${member.vetCertApproved == 1}">✅ 인증</c:when>
                     <c:when test="${member.vetCertApproved == 2}">❌ 거절</c:when>
-                    <c:otherwise>⏳ 대기 중</c:otherwise>
+                    <c:when test="${not empty member.vetCertUrl}">
+                        <form action="/adm/vetCert/changeStatus" method="post" style="display:inline;">
+                            <input type="hidden" name="memberId" value="${member.id}"/>
+                            <input type="hidden" name="approved" value="1"/>
+                            <button type="submit" class="text-green-600 hover:underline"
+                                    onclick="return confirm('인증 승인하시겠습니까?')">승인
+                            </button>
+                        </form>
+                        <form action="/adm/vetCert/changeStatus" method="post" style="display:inline; margin-left:5px;">
+                            <input type="hidden" name="memberId" value="${member.id}"/>
+                            <input type="hidden" name="approved" value="2"/>
+                            <button type="submit" class="text-red-600 hover:underline"
+                                    onclick="return confirm('인증 거절하시겠습니까?')">거절
+                            </button>
+                        </form>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="text-gray-400">⏳ 대기 중</span>
+                    </c:otherwise>
                 </c:choose>
             </td>
         </tr>

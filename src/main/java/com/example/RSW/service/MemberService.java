@@ -112,9 +112,6 @@ public class MemberService {
 		return ResultData.from("S-1", "탈퇴 처리 완료");
 	}
 
-	public List<Member> getAllMembers() {
-		return memberRepository.findAllWithVetCert();
-	}
 
 
 	public void updateAuthLevel(int memberId, int authLevel) {
@@ -122,7 +119,8 @@ public class MemberService {
 	}
 
 	public List<Member> getForPrintMembers(String searchType, String searchKeyword) {
-		return memberRepository.getForPrintMembers(searchType, searchKeyword);
+		return memberRepository.getForPrintMembersWithCert(searchType, searchKeyword);
 	}
+
 
 }

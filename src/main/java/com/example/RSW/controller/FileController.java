@@ -17,8 +17,10 @@ public class FileController {
 
     @GetMapping("/gen/file/download")
     public void downloadFile(@RequestParam("path") String path, HttpServletResponse response) throws IOException {
-        String basePath = "C:/upload/"; // 파일이 저장된 실제 경로
-        String fullPath = basePath + path;
+        String basePath = "C:/upload/";
+        String fullPath = basePath + path.replace("/", File.separator);
+
+        System.out.println("▶ 요청 경로 확인: " + fullPath);
 
         File file = new File(fullPath);
         if (!file.exists()) {
@@ -26,16 +28,14 @@ public class FileController {
             return;
         }
 
-        // ContentType 자동 설정
         String contentType = Files.probeContentType(file.toPath());
         response.setContentType(contentType != null ? contentType : "application/octet-stream");
 
-        // 파일명 인코딩 (다운로드 시 한글 깨짐 방지)
         String encodedName = URLEncoder.encode(file.getName(), "UTF-8").replaceAll("\\+", "%20");
-
         response.setHeader("Content-Disposition", "inline; filename=\"" + encodedName + "\"");
         response.setContentLengthLong(file.length());
 
         FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
     }
+
 }
