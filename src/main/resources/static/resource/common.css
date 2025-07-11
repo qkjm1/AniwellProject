@@ -7,3 +7,45 @@ body {
 	border-bottom-left-radius: 40px;
 	background-color: white;
 }
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.bar {
+  height: 3px;
+  width: 100%;
+  background-color: #2e576d;
+  border-radius: 9999px;
+  transition: 0.3s;
+}
+
+
+.hamburger:hover > .bar {
+  height: 3px;
+  width: 100%;
+  background-color: white;
+  border-radius: 9999px;
+  transition: 0.3s;
+}
+
+
+
+
+/* 햄버거 → X 모양으로 바뀔 때 */
+.hamburger.active .bar:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}

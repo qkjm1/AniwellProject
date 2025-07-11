@@ -1,10 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8">
-  <title>타임리프 예제</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" th:href="@{/resource/common.css}">
+	<title>페이지 기본 틀</title>
 </head>
-<body>
-  <h1 th:text="'안녕하세요, ' + ${name} + '님!'">안녕하세요!</h1>
+
+<body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans">
+	<div class="flex h-screen">
+		<!-- Sidebar -->
+		<aside class="w-20 flex flex-col items-center p-4">
+			<img src="https://i.imgur.com/rcOcaL6.png" alt="Logo" class="w-12 mb-6">
+
+			<!-- 프로필 원형 -->
+			<div class="w-14 h-14 bg-[#2e576d] rounded-full"></div>
+
+			<!-- 메뉴 아이콘 -->
+			<div class="flex flex-col gap-4 mt-2">
+				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기">
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+				</button>
+				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기">
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+				</button>
+				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기">
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+				</button>
+			</div>
+
+			<!-- 추가 여백 -->
+			<div class="flex-1"></div>
+
+			<!-- 예비 메뉴 버튼들 -->
+			<div class="space-y-2">
+				<button class="bg-lime-200 text-xs py-1 px-2 rounded-xl shadow">나의 정보</button>
+				<button class="bg-lime-200 text-xs py-1 px-2 rounded-xl shadow">산책 크루</button>
+			</div>
+			<div class="mt-auto">
+				<img src="https://i.imgur.com/OJI4yzC.png" alt="paw" class="w-8">
+			</div>
+		</aside>
+
+
+		<!-- Main content -->
+		<main class="main_page min-h-screen flex-1 p-6 ">
+
+
+
+		</main>
+
+	</div>
+
 </body>
+
 </html>
