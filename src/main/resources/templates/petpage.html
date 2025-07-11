@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Aniwell Dashboard</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<link rel="stylesheet" th:href="@{/resource/petPage.css}">
+	<link rel="stylesheet" th:href="@{/resource/common.css}">
+	<script th:src="@{/resource/calendar.js}"></script>
+
+
+</head>
+
+<body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans">
+	<div class="flex h-screen">
+		<!-- Sidebar -->
+		<aside class="w-20 flex flex-col items-center p-4">
+			<img src="https://i.imgur.com/rcOcaL6.png" alt="Logo" class="w-12 mb-6">
+			<div class="flex-1 flex flex-col gap-4">
+				<div class="w-8 h-1 bg-black rounded"></div>
+				<div class="w-8 h-1 bg-black rounded"></div>
+			</div>
+			<div class="mt-auto">
+				<img src="https://i.imgur.com/OJI4yzC.png" alt="paw" class="w-8">
+			</div>
+		</aside>
+
+
+		<!-- Main content -->
+		<main class="main_page flex-1 p-6 grid grid-cols-12 gap-4">
+
+		  <!-- 왼쪽 8칸: 차트 + 감정분석 + 캘린더 -->
+		  <section class="col-span-8 flex flex-col gap-4">
+
+		    <!-- 차트 -->
+		    <div class="bg-white p-4 rounded-xl shadow h-60">
+		      <canvas id="myChart" class="w-full h-full"></canvas>
+		    </div>
+
+		    <!-- 감정분석 카드 -->
+		    <div class="grid grid-cols-2 gap-4">
+		      <div class="bg-[#e0eadf] rounded-xl p-4 text-center font-semibold">
+		        우리아이 감정분석하기
+		      </div>
+		      <div class="bg-[#e0eadf] rounded-xl p-4 text-sm text-center">
+		        어제보다 오늘 물을 <span class="font-bold">3ml</span> 더 먹었어요!<br>
+		        <button class="text-blue-600 mt-2 underline">행동분석보기 &gt;</button>
+		      </div>
+		    </div>
+
+		    <!-- 캘린더 -->
+		    <div class="bg-[#fdf6c2] rounded-xl p-4">
+		      <div id="calendar-container" class="w-full"></div>
+		    </div>
+
+		  </section>
+
+		  <!-- 오른쪽 4칸: 고양이 정보 + 주변 펫살 -->
+		  <aside class="col-span-4 flex flex-col gap-4">
+
+		    <!-- 고양이 일러스트 -->
+		    <div class="bg-white rounded-xl p-4 flex flex-col items-center">
+		      <p class="text-sm text-gray-600 mb-2">똥냥이!</p>
+		      <img src="https://i.imgur.com/qYhSSXR.png" alt="cat" class="w-24">
+		    </div>
+
+		    <!-- 등록증 -->
+		    <div id="animal-card" class="bg-white rounded-xl p-4">
+		    </div>
+
+		    <!-- 주변 펫살 보기 -->
+		    <div class="bg-gray-300 h-10 rounded-xl p-2 text-sm">주변 펫살 알아보기</div>
+		    <div class="bg-gray-200 h-10 rounded-xl"></div>
+		    <div class="bg-gray-200 h-10 rounded-xl"></div>
+
+		  </aside>
+
+		</main>
+
+	</div>
+
+
+
+
+	<script>
+		renderMiniCalendar('calendar-container');
+	</script>
+
+	<script>
+		const ctx = document.getElementById('myChart').getContext('2d');
+		const myChart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: ['월', '화', '수', '목', '금', '토', '일'],
+				datasets: [
+					{
+						label: '식사량',
+						data: [4, 5, 3, 4.5, 5, 6, 4.8],
+						backgroundColor: 'rgba(244, 211, 94, 0.8)',
+						borderRadius: {
+							topLeft: 100,
+							bottomRight: 40
+						},
+						barPercentage: 0.6,
+						borderSkipped: false,
+						categoryPercentage: 0.7
+					},
+					{
+						label: '물 섭취량',
+						data: [3, 2.5, 4, 3.5, 4, 5, 4.2],
+						backgroundColor: 'rgba(127, 176, 105, 0.8)',
+						borderRadius: {
+							topLeft: 100,
+							bottomRight: 40
+						},
+						barPercentage: 0.6,
+						borderSkipped: false,
+						categoryPercentage: 0.7
+					},
+					{
+						label: '최종 점수',
+						data: [7, 7.5, 7, 8, 9, 10, 9],
+						backgroundColor: 'rgba(79, 109, 122, 0.8)',
+						borderRadius: {
+							topLeft: 100,
+							bottomRight: 40
+						},
+						borderSkipped: false,
+						barPercentage: 0.6,
+						categoryPercentage: 0.7
+					}
+				]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						position: 'top'
+					},
+					title: {
+						display: false
+					}
+				},
+				scales: {
+					y: {
+						beginAtZero: true,
+						max: 10
+					}
+				}
+			}
+		});
+
+	</script>
+	<script th:src="@{/resource/calendar.js}"></script>
+
+
+
+</body>
+
+</html>
