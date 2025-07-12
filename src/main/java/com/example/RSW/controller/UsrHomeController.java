@@ -19,8 +19,12 @@ public class UsrHomeController {
     
     @RequestMapping("/hello")
     public String hello(Model model) {
-    	model.addAttribute("name", "정민");
         return "common";
+    }
+    
+    @RequestMapping("/hello2")
+    public String hello2(Model model) {
+        return "petpage";
     }
 
 
