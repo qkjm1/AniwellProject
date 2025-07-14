@@ -90,7 +90,7 @@ public class PetController {
 
         model.addAttribute("pets", pets);
         model.addAttribute("crews", crews);
-        return "patpage"; // JSP or Thymeleaf 페이지
+        return "/usr/pet/list"; // JSP or Thymeleaf 페이지
     }
 
     @RequestMapping("/usr/pet/join")
