@@ -81,7 +81,7 @@ public class PetController {
         ObjectMapper objectMapper = new ObjectMapper();
         String eventsJson = objectMapper.writeValueAsString(events);
         model.addAttribute("eventsJson", eventsJson);
-        return "/usr/pet/petPage"; // JSP or Thymeleaf 페이지
+        return "usr/pet/petPage"; // JSP or Thymeleaf 페이지
     }
     @RequestMapping("/usr/pet/list")
     public String showPetList(@RequestParam("memberId") int memberId, Model model) {

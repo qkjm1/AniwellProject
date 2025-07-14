@@ -50,29 +50,29 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
         ir.excludePathPatterns("/resource/**");
         ir.excludePathPatterns("/error");
 
-//		로그인 필요
-        ir = registry.addInterceptor(needLoginInterceptor);
-//		글 관련
-        ir.addPathPatterns("/usr/article/write");
-        ir.addPathPatterns("/usr/article/doWrite");
-        ir.addPathPatterns("/usr/article/modify");
-        ir.addPathPatterns("/usr/article/doModify");
-        ir.addPathPatterns("/usr/article/doDelete");
-
-//		회원관련
-        ir.addPathPatterns("/usr/member/myPage");
-        ir.addPathPatterns("/usr/member/checkPw");
-        ir.addPathPatterns("/usr/member/doCheckPw");
-        ir.addPathPatterns("/usr/member/doLogout");
-        ir.addPathPatterns("/usr/member/modify");
-        ir.addPathPatterns("/usr/member/doModify");
-
-//		댓글 관련
-        ir.addPathPatterns("/usr/reply/doWrite");
-
-//		좋아요 싫어요
-        ir.addPathPatterns("/usr/reactionPoint/doGoodReaction");
-        ir.addPathPatterns("/usr/reactionPoint/doBadReaction");
+////		로그인 필요
+//        ir = registry.addInterceptor(needLoginInterceptor);
+////		글 관련
+//        ir.addPathPatterns("/usr/article/write");
+//        ir.addPathPatterns("/usr/article/doWrite");
+//        ir.addPathPatterns("/usr/article/modify");
+//        ir.addPathPatterns("/usr/article/doModify");
+//        ir.addPathPatterns("/usr/article/doDelete");
+//
+////		회원관련
+//        ir.addPathPatterns("/usr/member/myPage");
+//        ir.addPathPatterns("/usr/member/checkPw");
+//        ir.addPathPatterns("/usr/member/doCheckPw");
+//        ir.addPathPatterns("/usr/member/doLogout");
+//        ir.addPathPatterns("/usr/member/modify");
+//        ir.addPathPatterns("/usr/member/doModify");
+//
+////		댓글 관련
+//        ir.addPathPatterns("/usr/reply/doWrite");
+//
+////		좋아요 싫어요
+//        ir.addPathPatterns("/usr/reactionPoint/doGoodReaction");
+//        ir.addPathPatterns("/usr/reactionPoint/doBadReaction");
 
 //		로그아웃 필요
         ir = registry.addInterceptor(needLogoutInterceptor);
