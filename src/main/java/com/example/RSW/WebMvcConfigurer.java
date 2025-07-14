@@ -74,6 +74,32 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 //        ir.addPathPatterns("/usr/reactionPoint/doGoodReaction");
 //        ir.addPathPatterns("/usr/reactionPoint/doBadReaction");
 
+
+//      펫 관련
+        ir.addPathPatterns("/usr/walkCrew/crewChat");
+        ir.addPathPatterns("/usr/pet/petPage");
+        ir.addPathPatterns("/usr/pet/list");
+        ir.addPathPatterns("/usr/pet/join");
+        ir.addPathPatterns("/usr/pet/doJoin");
+        ir.addPathPatterns("/usr/pet/modify");
+        ir.addPathPatterns("/usr/pet/doModify");
+        ir.addPathPatterns("/usr/pet/analysis");
+        ir.addPathPatterns("/usr/pet/analysis/do");
+        ir.addPathPatterns("/usr/pet/delete");
+        ir.addPathPatterns("/usr/pet/vaccination/registration");
+        ir.addPathPatterns("/usr/pet/vaccination/doRegistration");
+        ir.addPathPatterns("/usr/pet/vaccination/modify");
+        ir.addPathPatterns("/usr/pet/vaccination/doModify");
+        ir.addPathPatterns("/usr/pet/vaccination/detail");
+        ir.addPathPatterns("/usr/pet/vaccination/delete");
+        ir.addPathPatterns("/usr/pet/daily");
+        ir.addPathPatterns("/usr/pet/daily/write");
+        ir.addPathPatterns("/usr/pet/daily/domodify");
+        ir.addPathPatterns("/usr/pet/daily/delete");
+        ir.addPathPatterns("/usr/pet/daily/detail");
+
+
+
 //		로그아웃 필요
         ir = registry.addInterceptor(needLogoutInterceptor);
         ir.addPathPatterns("/usr/member/login");

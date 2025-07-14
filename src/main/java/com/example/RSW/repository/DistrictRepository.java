@@ -25,5 +25,6 @@ public interface DistrictRepository {
 	District getDistrictById(@Param("id") int id);
 
 	District findByDong(String dong);
-}
 
+	int getDistrictIdByFullAddress(String city, String district, String dong);
+}

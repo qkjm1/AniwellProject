@@ -2,7 +2,10 @@ package com.example.RSW.service;
 
 import java.util.List;
 
+import com.example.RSW.repository.ArticleRepository;
+import com.example.RSW.repository.MemberRepository;
 import com.example.RSW.util.Ut;
+import com.example.RSW.vo.Article;
 import com.example.RSW.vo.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,15 @@ public class ReplyService {
 
     @Autowired
     private ReplyRepository replyRepository;
+
+    @Autowired
+    private ArticleRepository articleRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public ReplyService(ReplyRepository replyRepository) {
         this.replyRepository = replyRepository;
@@ -30,13 +42,6 @@ public class ReplyService {
         return replies;
     }
 
-    public ResultData writeReply(int loginedMemberId, String body, String relTypeCode, int relId) {
-        replyRepository.writeReply(loginedMemberId, body, relTypeCode, relId);
-
-        int id = replyRepository.getLastInsertId();
-
-        return ResultData.from("S-1", Ut.f("%d번 댓글이 등록되었습니다", id), "등록 된 댓글의 id", id);
-    }
 
     private void controlForPrintData(int loginedMemberId, Reply reply) {
         if (reply == null) {
@@ -74,4 +79,31 @@ public class ReplyService {
     public void deleteReply(int id) {
         replyRepository.deleteReply(id);
     }
+
+    public ResultData writeReply(int loginedMemberId, String body, String relTypeCode, int relId) {
+        replyRepository.writeReply(loginedMemberId, body, relTypeCode, relId);
+        int id = replyRepository.getLastInsertId();
+
+        if (relTypeCode.equals("article")) {
+            Article post = articleRepository.getArticleById(relId);
+            if (post != null && post.getMemberId() != loginedMemberId) {
+                String nickname = memberRepository.getNicknameById(loginedMemberId);
+                String message = "💬 " + nickname + "님이 회원님의 글에 댓글을 달았습니다.";
+                String link = "/usr/article/detail?id=" + relId + "#reply-" + id;
+                String type = "COMMENT"; // ✅ 알림 타입
+
+                notificationService.addNotification(
+                        post.getMemberId(),     // 수신자
+                        loginedMemberId,        // 보낸 사람
+                        type,                   // 알림 타입
+                        message,
+                        link
+                );
+            }
+        }
+
+        return ResultData.from("S-1", Ut.f("%d번 댓글이 등록되었습니다.", id), "등록된 댓글의 id", id);
+    }
+
+
 }

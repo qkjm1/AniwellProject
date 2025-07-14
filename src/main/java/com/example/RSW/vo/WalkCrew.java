@@ -20,6 +20,7 @@ public class WalkCrew {
 	private LocalDateTime createdAt; // 생성일시
 
 	// JOIN 조회용 필드 (optional)
+	private String nickname;
 	private String city; // 시
 	private String district; // 구
 	private String dong; // 동

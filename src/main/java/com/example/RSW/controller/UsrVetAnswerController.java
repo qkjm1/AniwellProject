@@ -1,5 +1,6 @@
 package com.example.RSW.controller;
 
+import com.example.RSW.service.NotificationService;
 import com.example.RSW.service.QnaService;
 import com.example.RSW.service.VetAnswerService;
 import com.example.RSW.util.Ut;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/usr/vetAnswer")
+@RequestMapping("/usr/vetAnswer") // 사용자(수의사)용 답변 기능 컨트롤러
 public class UsrVetAnswerController {
 
     @Autowired
@@ -27,6 +28,10 @@ public class UsrVetAnswerController {
     @Autowired
     private Rq rq;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    // 답변 등록 처리
     @PostMapping("/doWrite")
     @ResponseBody
     public String doWrite(@RequestParam("qnaId") int qnaId,
@@ -34,7 +39,7 @@ public class UsrVetAnswerController {
 
         Member loginedMember = rq.getLoginedMember();
 
-        // 1. 로그인 여부 및 수의사 권한 체크
+        // 1. 로그인 및 수의사 권한 확인
         if (loginedMember == null || loginedMember.getAuthLevel() != 3) {
             return Ut.jsHistoryBack("F-1", "수의사만 답변할 수 있습니다.");
         }
@@ -45,7 +50,7 @@ public class UsrVetAnswerController {
             return Ut.jsHistoryBack("F-2", "해당 질문이 존재하지 않습니다.");
         }
 
-        // 3. 이미 답변이 달렸는지 확인
+        // 3. 이미 답변이 달린 질문인지 확인
         if (qna.isAnswered()) {
             return Ut.jsHistoryBack("F-3", "이미 답변이 등록된 질문입니다.");
         }
@@ -53,14 +58,21 @@ public class UsrVetAnswerController {
         // 4. 답변 저장
         vetAnswerService.write(qnaId, loginedMember.getId(), answer, loginedMember.getNickname());
 
-        // 5. QnA isAnswered = true로 업데이트
+        // 5. 질문 상태를 '답변 완료'로 변경
         qnaService.markAsAnswered(qnaId);
 
-        // 6. 성공 메시지 및 리다이렉트
+        // ✅ 알림 전송 (질문자 본인에게만, 수의사 자신이 아닐 경우)
+        if (qna.getMemberId() != loginedMember.getId()) {
+            String title = "수의사로부터 답변이 등록되었습니다.";
+            String link = "/usr/qna/detail?id=" + qnaId;
+            notificationService.send(qna.getMemberId(), title, link);
+        }
+
+        // 6. 성공 메시지 후 질문 상세로 이동
         return Ut.jsReplace("S-1", "답변이 등록되었습니다.", "/usr/qna/detail?id=" + qnaId);
     }
 
-    // 답변 수정 폼 (필요시)
+    // 답변 수정 폼
     @GetMapping("/modify")
     public String showModifyForm(@RequestParam int id, Model model) {
         VetAnswer vetAnswer = vetAnswerService.getById(id);
@@ -69,12 +81,14 @@ public class UsrVetAnswerController {
         if (vetAnswer == null) {
             return rq.historyBackOnView("존재하지 않는 답변입니다.");
         }
+
+        // 본인만 수정 가능
         if (loginedMember == null || loginedMember.getId() != vetAnswer.getMemberId()) {
             return rq.historyBackOnView("권한이 없습니다.");
         }
 
         model.addAttribute("vetAnswer", vetAnswer);
-        return "usr/vetAnswer/modify"; // 수정 폼 JSP 경로
+        return "usr/vetAnswer/modify";
     }
 
     // 답변 수정 처리
@@ -89,6 +103,7 @@ public class UsrVetAnswerController {
         if (vetAnswer == null) {
             return Ut.jsHistoryBack("F-1", "존재하지 않는 답변입니다.");
         }
+
         if (loginedMember == null || loginedMember.getId() != vetAnswer.getMemberId()) {
             return Ut.jsHistoryBack("F-2", "권한이 없습니다.");
         }
@@ -108,31 +123,32 @@ public class UsrVetAnswerController {
         if (vetAnswer == null) {
             return Ut.jsHistoryBack("F-1", "존재하지 않는 답변입니다.");
         }
+
         if (loginedMember == null || loginedMember.getId() != vetAnswer.getMemberId()) {
             return Ut.jsHistoryBack("F-2", "권한이 없습니다.");
         }
 
         vetAnswerService.delete(id);
-        // 삭제 후 관련 질문 답변 상태 false로 변경 가능 (필요 시)
+
+        // 필요 시 질문을 '답변 미완료' 상태로 변경
         qnaService.markAsAnsweredFalse(vetAnswer.getQnaId());
 
         return Ut.jsReplace("S-1", "답변이 삭제되었습니다.", "/usr/qna/detail?id=" + vetAnswer.getQnaId());
     }
 
+    // 수의사 전용 질문 목록 페이지
     @RequestMapping("/vetList")
     public String showVetQnaList(Model model) {
         Member loginedMember = rq.getLoginedMember();
 
         if (loginedMember == null || loginedMember.getAuthLevel() != 3) {
-            return "redirect:/usr/member/login";
+            return "redirect:/usr/member/login"; // 비로그인 또는 수의사 아님
         }
 
         List<Qna> questions = qnaService.getAllQuestions();
         model.addAttribute("questions", questions);
         model.addAttribute("rq", rq);
 
-        return "usr/vetAnswer/vetList"; // 수의사 전용 질문 리스트 페이지
+        return "usr/vetAnswer/vetList"; // 수의사 질문 목록 JSP
     }
-
-
 }

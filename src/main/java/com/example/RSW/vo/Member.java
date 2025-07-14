@@ -26,6 +26,7 @@ public class Member {
 	private LocalDateTime delDate;
 	private int authLevel;
 	private String authName;
+	private String photo;
 
 	private String vetCertUrl;        // 인증서 경로
 	private Integer vetCertApproved;  // 승인 상태

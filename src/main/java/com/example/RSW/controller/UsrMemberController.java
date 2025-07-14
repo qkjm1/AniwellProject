@@ -1,5 +1,7 @@
 package com.example.RSW.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.RSW.service.VetCertificateService;
 import com.example.RSW.vo.VetCertificate;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +22,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -34,6 +38,9 @@ public class UsrMemberController {
 
     @Autowired
     private VetCertificateService vetCertificateService;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
 
     @RequestMapping("/usr/member/doLogout")
@@ -159,8 +166,10 @@ public class UsrMemberController {
     }
 
 
-    @RequestMapping("/usr/member/myPage")
-    public String showmyPage(HttpServletRequest req, Model model) {
+    // 마이페이지
+    @RequestMapping({"/usr/member/myPage", "/usr/member/mypage"})
+    public String showMyPage(HttpServletRequest req, Model model) {
+
         Rq rq = (Rq) req.getAttribute("rq");
         Member loginedMember = rq.getLoginedMember();
 
@@ -195,36 +204,66 @@ public class UsrMemberController {
 
     @RequestMapping("/usr/member/doModify")
     @ResponseBody
-    public String doModify(HttpServletRequest req, String loginPw, String name, String nickname, String cellphone,
-                           String email) {
+    public String doModify(HttpServletRequest req,
+                           @RequestParam(required = false) String loginPw,
+                           @RequestParam String name,
+                           @RequestParam String nickname,
+                           @RequestParam String cellphone,
+                           @RequestParam String email,
+                           @RequestParam(required = false) MultipartFile photoFile) {
 
         Rq rq = (Rq) req.getAttribute("rq");
 
-        // 비번은 안바꾸는거 가능(사용자) 비번 null 체크는 x
+        if (Ut.isEmptyOrNull(name)) return Ut.jsHistoryBack("F-3", "이름을 입력하세요.");
+        if (Ut.isEmptyOrNull(nickname)) return Ut.jsHistoryBack("F-4", "닉네임을 입력하세요.");
+        if (Ut.isEmptyOrNull(cellphone)) return Ut.jsHistoryBack("F-5", "전화번호를 입력하세요.");
+        if (Ut.isEmptyOrNull(email)) return Ut.jsHistoryBack("F-6", "이메일을 입력하세요.");
 
-        if (Ut.isEmptyOrNull(name)) {
-            return Ut.jsHistoryBack("F-3", "name 입력 x");
+        String photoUrl = null;
+
+        // 1단계: 업로드 파일 확인
+        System.out.println("📸 업로드된 파일: " + (photoFile != null ? photoFile.getOriginalFilename() : "파일 없음"));
+
+        // 2단계: 클라우디너리 업로드
+        if (photoFile != null && !photoFile.isEmpty()) {
+            try {
+                System.out.println("📤 Cloudinary 업로드 시작");
+                Map uploadResult = cloudinary.uploader().upload(photoFile.getBytes(), ObjectUtils.emptyMap());
+                photoUrl = (String) uploadResult.get("secure_url");
+                System.out.println("✅ Cloudinary 업로드 완료: " + photoUrl);
+            } catch (IOException e) {
+                System.out.println("❌ Cloudinary 업로드 실패: " + e.getMessage());
+                return Ut.jsHistoryBack("F-7", "사진 업로드 실패: " + e.getMessage());
+            }
         }
-        if (Ut.isEmptyOrNull(nickname)) {
-            return Ut.jsHistoryBack("F-4", "nickname 입력 x");
-        }
-        if (Ut.isEmptyOrNull(cellphone)) {
-            return Ut.jsHistoryBack("F-5", "cellphone 입력 x");
-        }
-        if (Ut.isEmptyOrNull(email)) {
-            return Ut.jsHistoryBack("F-6", "email 입력 x");
-        }
+
+        // 3단계: 서비스 호출
+        int memberId = rq.getLoginedMemberId();
+
+        System.out.println("📝 전달할 회원정보");
+        System.out.println("이름: " + name);
+        System.out.println("닉네임: " + nickname);
+        System.out.println("전화번호: " + cellphone);
+        System.out.println("이메일: " + email);
+        System.out.println("비밀번호 있음?: " + (loginPw != null && !loginPw.isBlank()));
+        System.out.println("사진 URL: " + photoUrl);
 
         ResultData modifyRd;
-
         if (Ut.isEmptyOrNull(loginPw)) {
-            modifyRd = memberService.modifyWithoutPw(rq.getLoginedMemberId(), name, nickname, cellphone, email);
+            modifyRd = memberService.modifyWithoutPw(memberId, name, nickname, cellphone, email, photoUrl);
         } else {
-            modifyRd = memberService.modify(rq.getLoginedMemberId(), loginPw, name, nickname, cellphone, email);
+            modifyRd = memberService.modify(memberId, loginPw, name, nickname, cellphone, email, photoUrl);
         }
+
+        // 4단계: 세션 최신화
+        Member updatedMember = memberService.getMemberById(memberId);
+        rq.setLoginedMember(updatedMember);
+        System.out.println("🧩 세션 로그인 사용자 갱신 완료");
 
         return Ut.jsReplace(modifyRd.getResultCode(), modifyRd.getMsg(), "../member/myPage");
     }
+
+
 
     @RequestMapping("/usr/member/getLoginIdDup")
     @ResponseBody

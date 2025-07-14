@@ -9,11 +9,13 @@ import java.util.List;
 
 @Mapper
 public interface CalendarEventRepository {
-    ResultData insert(int memberId, LocalDate eventDate, int petId, String content);
-    ResultData update(int id, LocalDate eventDate, String content);
+    int insert(int memberId, LocalDate eventDate, String title, int petId, String content);
+    int update(int id, LocalDate eventDate, String title, String content);
     void delete(int id);
     List<CalendarEvent> findByMemberId(int memberId);
     List<CalendarEvent> findByPetId(int petId);
 
     CalendarEvent getEventsById(int id);
+
+    List<CalendarEvent> getEventByDateAndPetId(LocalDate eventDate, int petId);
 }

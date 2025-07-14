@@ -136,13 +136,21 @@
         <input type="text" id="name" name="name" required />
 
         <label for="species">종</label>
-        <input type="text" id="species" name="species" required />
+        <select id="species" name="species" required>
+          <option value="">선택</option>
+          <option value="강아지">강아지</option>
+          <option value="고양이">고양이</option>
+        </select>
 
         <label for="breed">품종</label>
         <input type="text" id="breed" name="breed" required />
 
         <label for="gender">성별</label>
-        <input type="text" id="gender" name="gender" required />
+        <select id="gender" name="gender" required>
+          <option value="">선택</option>
+          <option value="수컷">수컷</option>
+          <option value="암컷">암컷</option>
+        </select>
 
         <label for="birthDate">생일</label>
         <input type="date" id="birthDate" name="birthDate" required />

@@ -73,4 +73,14 @@
 		WHERE id = #{id}
 	</select>
 
+	<select id="getDistrictIdByFullAddress" parameterType="map"
+		resultType="int">
+		SELECT id
+		FROM district
+		WHERE city = #{city}
+		AND district = #{district}
+		AND dong = #{dong}
+	</select>
+
+
 </mapper>

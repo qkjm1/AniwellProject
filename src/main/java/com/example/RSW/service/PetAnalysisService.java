@@ -15,15 +15,12 @@ public class PetAnalysisService {
     @Autowired
     private PetAnalysisRepository petAnalysisRepository;
 
-    public void saveAnalysis(PetAnalysis analysis) {
-
-    }
-
-
+    // 펫 ID로 등록된 감정분석 데이터 불러오기
     public List<PetAnalysis> getAnalysisByPetId(int petId) {
         return petAnalysisRepository.getAnalysisByPetId(petId);
     }
 
+    // 감정 분석 데이터 저장
     public void save(PetAnalysis analysis) {
         petAnalysisRepository.insertAnalysis(analysis);
     }

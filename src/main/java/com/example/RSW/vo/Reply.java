@@ -26,4 +26,7 @@ public class Reply {
     private boolean userCanModify;
     private boolean userCanDelete;
 
+    public void setAlreadyLiked(boolean alreadyLiked) {
+
+    }
 }

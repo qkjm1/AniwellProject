@@ -34,3 +34,8 @@ custom:
 kakao:
   rest-api-key: "4ee9fc0d14943aa9c3cbdc16c6bcb982"
   javascript-key: "dfd275f49b78960a0458d6f6294cbde2"
+
+cloudinary:
+    cloud_name: dfiqktimk
+    api_key: 145284189636895
+    api_secret: 4TS23PL5HMWPolljcIRqitpWwU0

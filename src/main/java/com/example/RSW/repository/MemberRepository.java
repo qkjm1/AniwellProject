@@ -22,9 +22,9 @@ public interface MemberRepository {
 	public Member getMemberByNameAndEmail(String name, String email);
 
 	public void modify(int loginedMemberId, String loginPw, String name, String nickname, String cellphone,
-			String email);
+			String email, String photo);
 
-	public void modifyWithoutPw(int loginedMemberId, String name, String nickname, String cellphone, String email);
+	public void modifyWithoutPw(int loginedMemberId, String name, String nickname, String cellphone, String email,String photo);
 
 	void withdraw(int id);
 
@@ -35,4 +35,5 @@ public interface MemberRepository {
 	List<Member> getForPrintMembersWithCert(@Param("searchType") String searchType,
 											@Param("searchKeyword") String searchKeyword);
 
+	String getNicknameById(int loginedMemberId);
 }

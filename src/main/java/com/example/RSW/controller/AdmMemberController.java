@@ -1,9 +1,11 @@
 package com.example.RSW.controller;
 
 import com.example.RSW.service.MemberService;
+import com.example.RSW.service.NotificationService;
 import com.example.RSW.service.VetCertificateService;
 import com.example.RSW.util.Ut;
 import com.example.RSW.vo.Member;
+import com.example.RSW.vo.Rq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,12 @@ public class AdmMemberController {
     @Autowired
     private VetCertificateService vetCertificateService;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private Rq rq;
+
     @RequestMapping("/list")
     public String showMemberList(@RequestParam(defaultValue = "") String searchType,
                                  @RequestParam(defaultValue = "") String searchKeyword,
@@ -31,18 +39,28 @@ public class AdmMemberController {
     }
 
 
-    @PostMapping("/changeAuth")
-    @ResponseBody
-    public String changeAuth(@RequestParam int id, @RequestParam int authLevel) {
-        memberService.updateAuthLevel(id, authLevel);
+    @PostMapping("/changeVetCertStatus")
+    public String changeVetCertStatus(@RequestParam int memberId, @RequestParam int approved) {
+        // 인증 상태 변경
+        vetCertificateService.updateApprovalStatusByMemberId(memberId, approved);
 
-        // 수의사로 바뀌는 경우 인증서 승인 처리
-        if (authLevel == 3) {
-            vetCertificateService.updateApprovalStatusByMemberId(id, 1); // 승인
+        // 권한 자동 설정
+        if (approved == 1) {
+            memberService.updateAuthLevel(memberId, 3); // 수의사
+        } else if (approved == 2) {
+            memberService.updateAuthLevel(memberId, 1); // 일반
         }
 
-        return Ut.jsReplace("S-1", "권한이 변경되었습니다.", "/adm/member/list");
+        // 알림 전송
+        String title = (approved == 1) ? "수의사 인증이 승인되었습니다." : "수의사 인증이 거절되었습니다.";
+        String type = (approved == 1) ? "VET_APPROVED" : "VET_REJECTED";
+        String link = "/usr/member/myPage";
+        int adminId = rq.getLoginedMemberId();
+        notificationService.addNotification(memberId, adminId, type,  title, link);
+
+        // 💡 변경: 리디렉트로 안전하게 이동
+        return "redirect:/adm/member/list";
     }
 
-}
 
+}

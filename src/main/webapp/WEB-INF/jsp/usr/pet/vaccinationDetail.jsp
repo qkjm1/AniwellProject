@@ -25,20 +25,22 @@
     <form id="modifyForm">
       <input type="hidden" name="vaccinationId" value="${petVaccination.id}" />
       <ul class="vaccine-info">
-        <li><strong>백신 이름:</strong> <select name="vaccineName" required>
-          <option value="">선택하세요</option>
-          <option value="Rabies">Rabies</option>
-          <option value="Parvovirus">Parvovirus</option>
-          <option value="Distemper">Distemper</option>
-          <option value="Feline Distemper">Feline Distemper</option>
-          <option value="Feline Leukemia">Feline Leukemia</option>
-          <option value="Leptospirosis">Leptospirosis</option>
-          <option value="Bordetella">Bordetella</option>
-          <option value="Feline Panleukopenia">Feline Panleukopenia</option>
-          <option value="FIP">FIP</option>
-        </select></li>
+        <li><strong>백신 이름:</strong>
+          <select name="vaccineName" disabled>
+            <option value="">선택하세요</option>
+            <option value="Rabies" ${petVaccination.vaccineName == 'Rabies' ? 'selected' : ''}>Rabies</option>
+            <option value="Parvovirus" ${petVaccination.vaccineName == 'Parvovirus' ? 'selected' : ''}>Parvovirus</option>
+            <option value="Distemper" ${petVaccination.vaccineName == 'Distemper' ? 'selected' : ''}>Distemper</option>
+            <option value="Feline Distemper" ${petVaccination.vaccineName == 'Feline Distemper' ? 'selected' : ''}>Feline Distemper</option>
+            <option value="Feline Leukemia" ${petVaccination.vaccineName == 'Feline Leukemia' ? 'selected' : ''}>Feline Leukemia</option>
+            <option value="Leptospirosis" ${petVaccination.vaccineName == 'Leptospirosis' ? 'selected' : ''}>Leptospirosis</option>
+            <option value="Bordetella" ${petVaccination.vaccineName == 'Bordetella' ? 'selected' : ''}>Bordetella</option>
+            <option value="Feline Panleukopenia" ${petVaccination.vaccineName == 'Feline Panleukopenia' ? 'selected' : ''}>Feline Panleukopenia</option>
+            <option value="FIP" ${petVaccination.vaccineName == 'FIP' ? 'selected' : ''}>FIP</option>
+          </select>
+          <input type="hidden" name="vaccineName" value="${petVaccination.vaccineName}" />
+        </li>
         <li><strong>접종 날짜:</strong> <input type="date" name="injectionDate" value="${petVaccination.injectionDate}" required /></li>
-        <li><strong>다음 접종 예정일:</strong> <input type="date" name="nextDueDate" value="${petVaccination.nextDueDate}" /></li>
         <li><strong>비고:</strong> <textarea name="notes">${petVaccination.notes}</textarea></li>
       </ul>
       <div class="vaccine-actions">

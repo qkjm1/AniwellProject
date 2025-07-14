@@ -25,69 +25,66 @@ public class UsrQnaController {
     @Autowired
     private VetAnswerService vetAnswerService;
 
-    // 질문 리스트 페이지
+    // 질문 리스트 페이지 (자주 묻는 질문 + 내가 한 질문)
     @RequestMapping("/usr/qna/list")
     public String showQnaList(Model model,
                               @RequestParam(value = "selectedId", required = false) Integer selectedId) {
-        List<Qna> qnas = qnaService.getPublicFaqList(); // 자주 묻는 질문
-        List<Qna> myQnas = qnaService.getUserQnaByMemberId(rq.getLoginedMemberId());
+        List<Qna> qnas = qnaService.getPublicFaqList(); // 공개 FAQ 목록
+        List<Qna> myQnas = qnaService.getUserQnaByMemberId(rq.getLoginedMemberId()); // 내가 한 질문 목록
 
         Qna selectedQna = null;
         if (selectedId != null) {
-            selectedQna = qnaService.getQnaById(selectedId);
+            selectedQna = qnaService.getQnaById(selectedId); // 선택된 질문
         }
 
         model.addAttribute("qnas", qnas);
         model.addAttribute("myQnas", myQnas);
         model.addAttribute("selectedQna", selectedQna);
-        return "usr/qna/list";
+        return "usr/qna/list"; // JSP 렌더링
     }
 
-
-    // 질문 상세 보기
+    // 질문 상세 보기 (수의사 답변 포함)
     @RequestMapping("/usr/qna/detail")
     public String showQnaDetail(Model model, int id) {
         Qna qna = qnaService.getQnaById(id);
         model.addAttribute("qna", qna);
 
-        // 수의사 답변 리스트 조회
-        List<VetAnswer> vetAnswers = vetAnswerService.getByQnaId(id);
+        List<VetAnswer> vetAnswers = vetAnswerService.getByQnaId(id); // 수의사 답변 리스트
         model.addAttribute("vetAnswers", vetAnswers);
 
         model.addAttribute("rq", rq);
-        return "usr/qna/detail";
+        return "usr/qna/detail"; // JSP 경로
     }
 
-    // 사용자 질문 등록 폼
+    // 질문 등록 폼
     @RequestMapping("/usr/qna/ask")
     public String showQnaAskForm() {
         return "usr/qna/ask";
     }
 
-    // 질문 등록 처리
     @RequestMapping(value = "/usr/qna/doAsk", method = RequestMethod.POST)
     @ResponseBody
-    public ResultData doAsk(HttpServletRequest req,
-                            @RequestParam String title,
+    public ResultData doAsk(@RequestParam String title,
                             @RequestParam String body,
                             @RequestParam(required = false, defaultValue = "false") boolean isSecret) {
 
-        Rq rq = (Rq) req.getAttribute("rq");
         int loginedMemberId = rq.getLoginedMemberId();
 
-        if (Ut.isEmptyOrNull(title)) {
-            return ResultData.from("F-1", "제목을 입력해주세요.");
+        // ✅ 로그인 여부 확인 (추가)
+        if (loginedMemberId == 0) {
+            return ResultData.from("F-L", "로그인 후 이용해주세요.");
         }
 
-        if (Ut.isEmptyOrNull(body)) {
-            return ResultData.from("F-2", "내용을 입력해주세요.");
-        }
+        if (Ut.isEmptyOrNull(title)) return ResultData.from("F-1", "제목을 입력해주세요.");
+        if (Ut.isEmptyOrNull(body)) return ResultData.from("F-2", "내용을 입력해주세요.");
 
         qnaService.writeUserQna(loginedMemberId, title, body, isSecret);
 
         return ResultData.from("S-1", "질문이 성공적으로 등록되었습니다.");
     }
 
+
+    // 질문 삭제 처리
     @RequestMapping("/usr/qna/doDelete")
     @ResponseBody
     public void doDelete(@RequestParam int id) throws IOException {
@@ -107,6 +104,7 @@ public class UsrQnaController {
         rq.printReplace("S-1", "질문이 삭제되었습니다.", "/usr/qna/list");
     }
 
+    // 질문 수정 폼
     @RequestMapping("/usr/qna/modify")
     public String showModifyForm(@RequestParam int id, Model model) {
         Qna qna = qnaService.getQnaById(id);
@@ -120,9 +118,10 @@ public class UsrQnaController {
         }
 
         model.addAttribute("qna", qna);
-        return "usr/qna/modify"; // 이게 바로 modify.jsp와 연결됨
+        return "usr/qna/modify"; // 수정 폼 JSP
     }
 
+    // 질문 수정 처리
     @RequestMapping(value = "/usr/qna/doModify", method = RequestMethod.POST)
     @ResponseBody
     public String doModify(@RequestParam int id,
@@ -143,8 +142,6 @@ public class UsrQnaController {
         qnaService.modifyQna(id, title, body, isSecret);
 
         rq.printReplace("S-1", "질문이 수정되었습니다.", "/usr/qna/detail?id=" + id);
-        return null;
+        return null; // 리턴하지 않음 (자바스크립트로 리다이렉트 처리)
     }
-
-
 }

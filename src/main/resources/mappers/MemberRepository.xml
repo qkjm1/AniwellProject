@@ -60,6 +60,9 @@
             <if test="email != null">
                 email = #{email},
             </if>
+            <if test="photo != null">
+                photo = #{photo},
+            </if>
             updateDate = NOW()
         </set>
         WHERE id = #{loginedMemberId}
@@ -79,6 +82,9 @@
             </if>
             <if test="email != null">
                 email = #{email},
+            </if>
+            <if test="photo != null">
+                photo = #{photo},
             </if>
             updateDate = NOW()
         </set>
@@ -132,7 +138,11 @@
         ORDER BY m.id DESC
     </select>
 
-
+    <select id="getNicknameById" parameterType="int" resultType="String">
+        SELECT nickname
+        FROM member
+        WHERE id = #{loginedMemberId}
+    </select>
 
 
 </mapper>

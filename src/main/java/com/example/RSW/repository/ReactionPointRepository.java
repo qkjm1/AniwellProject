@@ -13,4 +13,9 @@ public interface ReactionPointRepository {
 
     public void deleteReactionPoint(int memberId, String relTypeCode, int relId);
 
+    boolean existsByMemberIdAndRelTypeCodeAndRelId(int memberId, String relTypeCode, int relId);
+
+    void delete(int memberId, String relTypeCode, int relId);
+
+    void insert(int memberId, String relTypeCode, int relId);
 }

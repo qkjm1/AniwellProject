@@ -47,7 +47,7 @@ public class MemberService {
 	}
 
 	private void setTempPassword(Member actor, String tempPassword) {
-		memberRepository.modify(actor.getId(), Ut.sha256(tempPassword), null, null, null, null);
+		memberRepository.modify(actor.getId(), Ut.sha256(tempPassword), null, null, null, null, null);
 	}
 
 	public ResultData<Integer> join(String loginId, String loginPw, String name, String nickname, String cellphone,
@@ -91,18 +91,18 @@ public class MemberService {
 	}
 
 	public ResultData modify(int loginedMemberId, String loginPw, String name, String nickname, String cellphone,
-			String email) {
+			String email,String photo) {
 
 		loginPw = Ut.sha256(loginPw);
 
-		memberRepository.modify(loginedMemberId, loginPw, name, nickname, cellphone, email);
+		memberRepository.modify(loginedMemberId, loginPw, name, nickname, cellphone, email,photo);
 
 		return ResultData.from("S-1", "회원정보 수정 완료");
 	}
 
 	public ResultData modifyWithoutPw(int loginedMemberId, String name, String nickname, String cellphone,
-			String email) {
-		memberRepository.modifyWithoutPw(loginedMemberId, name, nickname, cellphone, email);
+			String email, String photo) {
+		memberRepository.modifyWithoutPw(loginedMemberId, name, nickname, cellphone, email, photo);
 
 		return ResultData.from("S-1", "회원정보 수정 완료");
 	}

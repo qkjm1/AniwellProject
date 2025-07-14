@@ -1,6 +1,7 @@
 package com.example.RSW.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,12 +59,46 @@ public class WalkCrewService {
 		walkCrewRepository.deleteById(id);
 	}
 
-
 	public void joinCrew(int memberId, int crewId) {
-		walkCrewRepository.insertMemberToCrew(memberId, crewId);
+		if (!hasAlreadyJoined(crewId, memberId)) {
+			addMemberToCrew(crewId, memberId);
+		}
 	}
 
+	public boolean hasAlreadyJoined(int crewId, int memberId) {
+		return walkCrewRepository.countByCrewIdAndMemberId(crewId, memberId) > 0;
+	}
 
-	public List<WalkCrew> getWalkCrews(int memberId) { return walkCrewRepository.getWalkCrews(memberId);}
+	public void addMemberToCrew(int crewId, int memberId) {
+		walkCrewRepository.insertCrewMember(crewId, memberId);
+	}
+
+	public List<WalkCrew> getWalkCrews(int memberId) {
+		return walkCrewRepository.getWalkCrews(memberId);
+	}
+
+	public List<java.util.Map<String, Object>> getApplicantsByCrewId(int crewId) {
+		return walkCrewRepository.getApplicantsByCrewId(crewId);
+	}
+
+	public Map<String, Object> getApplicantDetail(int crewId, int memberId) {
+		return walkCrewRepository.getApplicantDetail(crewId, memberId);
+	}
+
+	public boolean isApprovedMember(int crewId, int memberId) {
+		return walkCrewRepository.isApprovedMember(crewId, memberId) > 0;
+	}
+
+	public void approveMember(int crewId, int memberId) {
+		walkCrewRepository.updateMemberStatusToApproved(crewId, memberId);
+	}
+
+	public WalkCrew getCrewByLeaderId(int leaderId) {
+		return walkCrewRepository.findByLeaderId(leaderId);
+	}
+
+	public WalkCrew getCrewByMemberId(int memberId) {
+		return walkCrewRepository.getCrewByMemberId(memberId);
+	}
 
 }

@@ -1,3 +1,4 @@
+
 DROP DATABASE IF EXISTS `aniwell`;
 CREATE DATABASE `aniwell`;
 USE `aniwell`;
@@ -28,6 +29,7 @@ CREATE TABLE `member`
     nickname   CHAR(20)  NOT NULL,
     cellphone  CHAR(20)  NOT NULL,
     email      CHAR(20)  NOT NULL,
+    photo  VARCHAR(255),
     delStatus  TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '탈퇴 여부 (0=탈퇴 전, 1=탈퇴 후)',
     authName   CHAR(30)  NOT NULL COMMENT '일반 또는 수의사',
     delDate    DATETIME COMMENT '탈퇴 날짜'
@@ -66,6 +68,7 @@ CREATE TABLE walk_crew_member
     memberId INT(10) NOT NULL COMMENT 'PK, FK',
     joinedAt DATETIME NOT NULL
 );
+
 
 -- 북마크 테이블
 CREATE TABLE bookmark
@@ -146,34 +149,43 @@ CREATE TABLE walk_crew
 (
     id          INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title       VARCHAR(100) NOT NULL,
-    descriptoin TEXT         NOT NULL,
+    `description` TEXT         NOT NULL,
     district_id INT          NOT NULL COMMENT 'FK → district(id)',
     leaderId    INT(10) NOT NULL,
     createdAt   DATETIME     NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE `walk_crew_member`
+ADD COLUMN petId INT(10) AFTER memberId;
+
 -- BLE 기반 반려동물 활동 테이블
-CREATE TABLE pet_ble_activity
-(
-    id          INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    petId       INT(10) NOT NULL COMMENT 'FK',
-    zoneName    VARCHAR(100) NOT NULL COMMENT '화장실 , 밥그릇, 물그릇, 침대',
-    enteredAt   DATETIME     NOT NULL COMMENT '구역 진입 시간',
-    exitedAt    DATETIME     NOT NULL COMMENT '구역 나간 시간',
-    durationSec INT          NOT NULL COMMENT '구역 머문 시간',
-    rssi        INT(10) NOT NULL
+
+CREATE TABLE `pet_ble_activity` (
+  `id` INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `petId` INT(10) NOT NULL,
+  `zoneName` VARCHAR(100) NOT NULL,
+  `enteredAt` DATETIME NOT NULL,
+  `exitedAt` DATETIME NOT NULL,
+  `durationSec` INT NOT NULL,
+  `rssi` INT(10) NOT NULL
 );
+
 
 
 -- 게시글 테이블
-CREATE TABLE article
-(
-    id         INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    regDate    DATETIME  NOT NULL DEFAULT NOW(),
-    updateDate DATETIME  NOT NULL DEFAULT NOW(),
-    title      CHAR(100) NOT NULL,
-    `body`     TEXT      NOT NULL
+CREATE TABLE `article` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '게시글 ID',
+  `regDate` DATETIME NOT NULL COMMENT '작성일',
+  `updateDate` DATETIME NOT NULL COMMENT '수정일', 
+  `crewId` INT(10) UNSIGNED DEFAULT NULL COMMENT '크루 ID (walk_crew 테이블 FK)', 
+  `title` VARCHAR(100) NOT NULL COMMENT '제목',
+  `body` TEXT NOT NULL COMMENT '내용', 
+  `delStatus` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '삭제 여부',
+  `delDate` DATETIME DEFAULT NULL COMMENT '삭제일',
+ 
+  CONSTRAINT `fk_article_crew` FOREIGN KEY (`crewId`) REFERENCES `walk_crew` (`id`) ON DELETE CASCADE
 );
+
 
 --  memberId 추가
 ALTER TABLE article
@@ -288,6 +300,34 @@ CREATE TABLE vaccine_schedule (
 
 ALTER TABLE calendar_event ADD COLUMN title VARCHAR(100) NOT NULL AFTER petId;
 
+
+ALTER TABLE walk_crew_member
+ADD COLUMN STATUS ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending' COMMENT '승인 상태';
+
+-- ✅ 산책 크루 채팅방
+CREATE TABLE `crew_chat_message` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `crewId` INT(10) UNSIGNED NOT NULL,  
+  `senderId` INT(10) UNSIGNED NOT NULL,
+  `nickname` VARCHAR(100) NOT NULL,
+  `content` TEXT NOT NULL,
+  `sentAt` DATETIME NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (`crewId`) REFERENCES `walk_crew`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`senderId`) REFERENCES `member`(`id`) ON DELETE CASCADE
+);
+
+-- ✅ 알림 기능 테이블
+CREATE TABLE notification (
+id INT(10) AUTO_INCREMENT PRIMARY KEY,
+memberId INT(10) NOT NULL,           -- 알림 받는 회원 ID (외래키 가능)
+title VARCHAR(255) NOT NULL,      -- 알림 제목
+link VARCHAR(255) DEFAULT NULL,   -- 알림 클릭 시 이동할 링크
+regDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 알림 생성일시
+isRead BOOLEAN NOT NULL DEFAULT FALSE  -- 읽음 여부
+);
+
+ALTER TABLE notification ADD senderId INT(10) UNSIGNED DEFAULT NULL;
+
 ############# 📜 테스트용 코드 ###################
 
 -- ✅ 게시판 샘플
@@ -337,6 +377,18 @@ INSERT INTO `article` (`regDate`, `updateDate`, `memberId`, `boardId`, `title`, 
 (NOW(), NOW(), 1, 1, '고양이 발정기 대처법', '고양이의 발정기 행동과 대처 방법을 알려드립니다.'),
 (NOW(), NOW(), 1, 1, '반려동물과 산책하기 좋은 장소', '서울에서 강아지와 산책하기 좋은 공원 소개.');
 
+-- ✅ 크루
+INSERT INTO `walk_crew` (`title`, `description`, `district_id`, `leaderId`, `createdAt`) VALUES
+('댕모임', '댕댕이 모임', 1, 1, NOW()),
+('강아지사랑', '댕댕이 모임', 2, 2, NOW());
+
+
+-- ✅ 크루 멤버
+INSERT INTO `walk_crew_member` (`memberId`, `crewId`, `joinedAt`) VALUES
+(2, 2, NOW()),
+(2, 1, NOW()),
+(1, 1, NOW());
+
 -- ✅ QnA
 INSERT INTO `qna` (`memberId`, `title`, `body`, `isSecret`, `isFromUser`, `isAnswered`, `orderNo`, `regDate`, `updateDate`, `isActive`)
 VALUES
@@ -357,11 +409,34 @@ INSERT INTO `vaccine_schedule` (`vaccineName`, `intervalMonths`, `type`, `descri
 
 ############# 💣 트리거 ###################
 
--- ✅ 백신 자동 계산 트리거
+-- ✅ 백신 자동 계산 트리거(insert)
 DELIMITER $$
 
 CREATE TRIGGER `auto_set_next_due_date`
 BEFORE INSERT ON `pet_vaccination`
+FOR EACH ROW
+BEGIN
+  DECLARE v_interval INT;
+
+  SELECT `intervalMonths` INTO v_interval
+  FROM `vaccine_schedule`
+  WHERE `vaccineName` = NEW.`vaccineName`
+  LIMIT 1;
+
+  IF v_interval IS NOT NULL THEN
+    SET NEW.`nextDueDate` = DATE_ADD(NEW.`injectionDate`, INTERVAL v_interval MONTH);
+  ELSE
+    SET NEW.`nextDueDate` = NULL;
+  END IF;
+END$$
+
+DELIMITER ;
+
+-- ✅ 백신 자동 계산 트리거(update)
+DELIMITER $$
+
+CREATE TRIGGER `auto_set_next_due_date_before_update`
+BEFORE UPDATE ON `pet_vaccination`
 FOR EACH ROW
 BEGIN
   DECLARE v_interval INT;
@@ -408,5 +483,7 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
 
 ############# 💣 트리거 ###################

@@ -50,16 +50,19 @@
             <td class="border px-2 py-1">${member.email}</td>
             <td class="border px-2 py-1">${member.loginId}</td>
             <td class="border px-2 py-1">
-                <form action="/adm/member/changeAuth" method="post">
-                    <input type="hidden" name="id" value="${member.id}"/>
-                    <select name="authLevel" class="border px-2 py-1 text-sm">
-                        <option value="1" ${member.authLevel == 1 ? 'selected' : ''}>일반</option>
-                        <option value="3" ${member.authLevel == 3 ? 'selected' : ''}>수의사</option>
-                        <option value="7" ${member.authLevel == 7 ? 'selected' : ''}>관리자</option>
-                    </select>
-                    <button class="text-sm text-blue-500 ml-2">변경</button>
-                </form>
+                <c:choose>
+                    <c:when test="${member.authLevel == 7}">
+                        관리자
+                    </c:when>
+                    <c:when test="${member.vetCertApproved == 1}">
+                        수의사
+                    </c:when>
+                    <c:otherwise>
+                        일반
+                    </c:otherwise>
+                </c:choose>
             </td>
+
             <td class="border px-2 py-1">
                 <c:choose>
                     <c:when test="${not empty member.vetCertUrl}">
@@ -77,14 +80,14 @@
                     <c:when test="${member.vetCertApproved == 1}">✅ 인증</c:when>
                     <c:when test="${member.vetCertApproved == 2}">❌ 거절</c:when>
                     <c:when test="${not empty member.vetCertUrl}">
-                        <form action="/adm/vetCert/changeStatus" method="post" style="display:inline;">
+                        <form action="/adm/member/changeVetCertStatus" method="post" style="display:inline;">
                             <input type="hidden" name="memberId" value="${member.id}"/>
                             <input type="hidden" name="approved" value="1"/>
                             <button type="submit" class="text-green-600 hover:underline"
                                     onclick="return confirm('인증 승인하시겠습니까?')">승인
                             </button>
                         </form>
-                        <form action="/adm/vetCert/changeStatus" method="post" style="display:inline; margin-left:5px;">
+                        <form action="/adm/member/changeVetCertStatus" method="post" style="display:inline; margin-left:5px;">
                             <input type="hidden" name="memberId" value="${member.id}"/>
                             <input type="hidden" name="approved" value="2"/>
                             <button type="submit" class="text-red-600 hover:underline"
