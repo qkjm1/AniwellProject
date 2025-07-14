@@ -7,7 +7,7 @@
 	<title>Aniwell Dashboard</title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<link rel="stylesheet" th:href="@{/resource/petPage.css}">
+	<link rel="stylesheet" th:href="@{/resource/css/petPage.css}">
 	<link rel="stylesheet" th:href="@{/resource/css/common.css}">
 	<script th:src="@{/resource/js/calendar.js}"></script>
 
@@ -15,86 +15,127 @@
 </head>
 
 <body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans">
-	<div class="flex h-screen" >
+	<div class="flex h-screen">
 		<!-- Sidebar -->
 		<div th:replace="common :: siteHeader"></div>
 
 		<!-- Main content -->
 		<main class="main_page min-h-screen flex-1 p-6 grid grid-cols-12 gap-4">
 
-		  <!-- 왼쪽 8칸: 차트 + 감정분석 + 캘린더 -->
-		  <section class="col-span-8 flex flex-col gap-4 h-full">
+			<!-- 왼쪽 8칸: 차트 + 감정분석 + 캘린더 -->
+			<section class="col-span-8 flex flex-col gap-4 h-full">
 
-		    <!-- 차트 -->
-		    <div class="bg-white p-4 rounded-xl shadow h-60">
-		      <canvas id="myChart" class="w-full h-full"></canvas>
-		    </div>
-
-		    <!-- 감정분석 카드 -->
-		    <div class="grid grid-cols-2 gap-4 ">
-		      <div class="bg-[#e0eadf] rounded-xl p-4 text-center font-semibold">
-		        우리아이 감정분석하기
-		      </div>
-		      <div class="bg-[#e0eadf] rounded-xl p-4 text-sm text-center">
-		        어제보다 오늘 물을 <span class="font-bold">3ml</span> 더 먹었어요!<br>
-		        <button class="text-blue-600 mt-2 underline">행동분석보기 &gt;</button>
-		      </div>
-		    </div>
-
-		    <!-- 캘린더 -->
-		    <div class="bg-[#fdf6c2] rounded-xl p-4 ">
-		      <div id="calendar-container" class="w-full"></div>
-		    </div>
-
-		  </section>
-
-		  <!-- 오른쪽 4칸: 고양이 정보 + 주변 펫살 -->
-		  <aside class="col-span-4 flex flex-col gap-4 h-full">
-
-		    <!-- 고양이 일러스트 -->
-		    <div class="bg-white rounded-xl p-4 flex flex-col items-center">
-		      <p class="text-sm text-gray-600 mb-2">똥냥이!</p>
-		      <img src="https://i.imgur.com/qYhSSXR.png" alt="cat" class="w-24">
-		    </div>
-
-		    <!-- 등록증 -->
-		    <div id="animal-card" class="bg-white rounded-xl p-4">
-				<div class="bg-white rounded-xl shadow p-4 w-full max-w-sm aspect-[1/1.6] flex flex-col justify-between">
-				  <!-- 헤더: 타이틀 + 이미지 -->
-				  <div class="flex items-center justify-between">
-				    <h2 class="text-base font-bold flex items-center gap-1">
-				      <span class="text-xl">🐾</span> 반려동물등록증
-				    </h2>
-				    <img src="https://i.imgur.com/vTaaRnh.png" alt="cat" class="w-16 h-16 rounded-md object-cover" />
-				  </div>
-
-				  <!-- 내용 -->
-				  <div class="text-xs leading-relaxed space-y-1 mt-4 flex-1">
-				    <div><span class="font-semibold mr-1">이름:</span> <span th:text="${pet.name}">이름</span></div>
-				    <div><span class="font-semibold mr-1">등록번호:</span> <span th:text="${pet.id}">12345</span></div>
-				    <div class="flex gap-4">
-				      <div><span class="font-semibold mr-1">품종:</span> <span th:text="${pet.breed}">품종</span></div>
-				      <div><span class="font-semibold mr-1">생일:</span> <span th:text="${pet.birthDate}">생일
-					  </span></div>
-				    </div>
-				    <div class="flex gap-4">
-				      <div><span class="font-semibold mr-1">성별:</span> <span th:text="${pet.gender}">성별</span></div>
-				      <div><span class="font-semibold mr-1">몸무게:</span> <span th:text="${pet.weight}">몸무게</span></div>
-				    </div>
-				    <div><span class="font-semibold mr-1">특징:</span> <span th:text="${pet.species}">특징</span></div>
-				  </div>
-
-				  <!-- 푸터: 등록일 -->
-				  <div class="text-right text-[10px] text-gray-500 mt-2" th:text="${pet.createdAt}">2025.07.05</div>
+				<!-- 차트 -->
+				<div class="bg-white p-4 rounded-xl shadow h-60">
+					<canvas id="myChart" class="w-full h-full"></canvas>
 				</div>
-		    </div>
 
-		    <!-- 주변 펫살 보기 -->
-		    <div class="bg-gray-300 h-10 rounded-xl p-2 text-sm">주변 펫살 알아보기</div>
-		    <div class="bg-gray-200 h-10 rounded-xl"></div>
-		    <div class="bg-gray-200 h-10 rounded-xl"></div>
+				<!-- 감정분석 카드 -->
+				<div class="grid grid-cols-2 gap-4 h-3/5">
+					<div class="bg-[#e0eadf] rounded-xl p-4 text-center font-semibold">
+						우리아이 감정분석하기
+					</div>
+					<div class="bg-[#e0eadf] rounded-xl p-4 text-sm text-center">
+						어제보다 오늘 물을 <span class="font-bold">3ml</span> 더 먹었어요!<br>
+						<button class="text-blue-600 mt-2 underline">행동분석보기 &gt;</button>
+					</div>
+				</div>
 
-		  </aside>
+				<!-- 캘린더 -->
+				<div class="flex gap-4">
+
+					<!-- 왼쪽: 일정/버튼 -->
+					<div class="flex flex-col gap-4 w-[300px] relative">
+						<!-- 상단 + 버튼 포함한 헤더 -->
+						<div class="flex justify-between items-center absoiute">
+							<span class="text-sm font-bold">JULY 5</span>
+							<button
+								class="w-6 h-6 rounded-full bg-[#fdf6c2] shadow flex items-center justify-center text-lg font-bold">+</button>
+						</div>
+
+						<!-- 일정 목록 -->
+						<div class="bg-[#fdf6c2] rounded-xl shadow text-sm h-full py-3">
+							<div class="bg-[#efefef]">떡걸룩이 예방접종한 날</div>
+						</div>
+					</div>
+
+					<!-- 오른쪽: 캘린더 -->
+					<div class="bg-[#fdf6c2] rounded-xl p-4 flex-1 shadow">
+						<div id="calendar-container" class="w-full"></div>
+					</div>
+
+				</div>
+
+
+			</section>
+
+			<!-- 오른쪽 4칸: 고양이 정보 + 주변 펫살 -->
+			<aside class="col-span-4 flex flex-col gap-4">
+
+				<!-- 고양이 일러스트 -->
+				<div class="bg-white rounded-xl p-4 flex flex-col items-center h-full shadow">
+					<p class="text-sm text-gray-600 mb-2">똥냥이!</p>
+					<img src="https://i.imgur.com/qYhSSXR.png" alt="cat" class="w-24">
+				</div>
+
+				<!-- 등록증 -->
+				<div class="w-full bg-white rounded-xl max-w-4xl p-6 shadow h-3/5">
+					<!-- 제목 -->
+					<h2 class="text-2xl font-bold flex items-center gap-2 mb-4">
+						<span class="text-3xl">🐾</span> 반려동물등록증
+					</h2>
+
+					<!-- 3열 Grid -->
+					<div class="grid grid-cols-3">
+
+						<!-- 1열 -->
+						<div>
+							<div class="space-y-2 text-sm">
+								<div><span class="font-semibold mr-2">이름:</span> <span th:text="${pet.name}">떡걸룩</span>
+								</div>
+								<div><span class="font-semibold mr-2">등록번호:</span> <span
+										th:text="${pet.id}">12345</span></div>
+								<div><span class="font-semibold mr-2">품종:</span> <span
+										th:text="${pet.breed}">코리안숏헤어</span></div>
+								<div><span class="font-semibold mr-2">성별:</span> <span th:text="${pet.gender}">암컷</span>
+								</div>
+							</div>
+
+							<!-- 특징: grid 밖에 위치 -->
+							<div class="mt-4 text-sm">
+								<span class="font-semibold mr-2">특징:</span>
+								<span th:text="${pet.species}">겁이 많고 높은 데를 아주 좋아해요</span>
+							</div>
+						</div>
+
+						<!-- 2열 -->
+						<div class="space-y-2 text-sm">
+							<div><span class="font-semibold mr-2">생일:</span> <span
+									th:text="${pet.birthDate}">2020.01.01</span></div>
+							<div><span class="font-semibold mr-2">중성화:</span> <span>완료</span>
+							</div>
+						</div>
+
+						<!-- 3열: 사진 -->
+						<div class="flex justify-center items-start">
+							<img src="https://i.imgur.com/vTaaRnh.png" alt="cat"
+								class="w-30 h-30 object-cover rounded-xl border" />
+						</div>
+					</div>
+
+					<!-- 등록일 -->
+					<div class="createdAt text-right text-xs text-gray-500 mt-6">2025.07.05</div>
+				</div>
+
+
+				<!-- 주변 펫살 보기 -->
+				<div class="grid grid-row-3 gap-2 h-full">
+					<div class="bg-gray-300 rounded-xl p-2 text-sm">주변 펫살 알아보기</div>
+					<div class="bg-gray-200 rounded-xl p-2 text-sm">123</div>
+					<div class="bg-gray-200 rounded-xl p-2 text-sm">123</div>
+				</div>
+			</aside>
+
 
 		</main>
 
@@ -173,7 +214,7 @@
 		});
 
 	</script>
-	<script th:src="@{/resource/calendar.js}"></script>
+	<script th:src="@{/resource/js/calendar.js}"></script>
 
 
 

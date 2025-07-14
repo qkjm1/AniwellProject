@@ -2,6 +2,15 @@
 	margin-top: 10px;
 }
 
-.main_page > section {
+.main_page>section {
 	width: 100%;
+}
+
+.pet_img {
+	margin-left: auto;
+	margin-top: 50px;
+}
+
+.createdAt {
+	border-top: 2px solid lemonchiffon;
 }
