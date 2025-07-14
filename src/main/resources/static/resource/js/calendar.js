@@ -97,33 +97,3 @@ function renderMiniCalendar(targetId, date = new Date()) {
 }
 
 
-document.getElementById('animal-card').innerHTML = `
-<div class="bg-white rounded-xl shadow p-4 w-full max-w-sm aspect-[1/1.6] flex flex-col justify-between">
-  <!-- 헤더: 타이틀 + 이미지 -->
-  <div class="flex items-center justify-between">
-    <h2 class="text-base font-bold flex items-center gap-1">
-      <span class="text-xl">🐾</span> 반려동물등록증
-    </h2>
-    <img src="https://i.imgur.com/vTaaRnh.png" alt="cat" class="w-16 h-16 rounded-md object-cover" />
-  </div>
-
-  <!-- 내용 -->
-  <div class="text-xs leading-relaxed space-y-1 mt-4 flex-1">
-    <div><span class="font-semibold mr-1">이름:</span> <span th:text="${name}">이름</span></div>
-    <div><span class="font-semibold mr-1">등록번호:</span> <span th:text="${id}">12345</span></div>
-    <div class="flex gap-4">
-      <div><span class="font-semibold mr-1">품종:</span> <span th:text="${breed}">-</span></div>
-      <div><span class="font-semibold mr-1">생일:</span> <span th:text="${birth}">-</span></div>
-    </div>
-    <div class="flex gap-4">
-      <div><span class="font-semibold mr-1">성별:</span> <span th:text="${gender}">-</span></div>
-      <div><span class="font-semibold mr-1">중성화:</span> <span th:text="${neuter}">-</span></div>
-    </div>
-    <div><span class="font-semibold mr-1">특징:</span> <span th:text="${feature}">-</span></div>
-  </div>
-
-  <!-- 푸터: 등록일 -->
-  <div class="text-right text-[10px] text-gray-500 mt-2" th:text="${date}">2025.07.05</div>
-</div>
-
-`;

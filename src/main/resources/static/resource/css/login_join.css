@@ -19,11 +19,17 @@ body {
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
+.form-slider {
+	display: flex;
+	width: 200%;
+	height: 100%;
+	transition: transform 0.5s ease;
+}
+
 /* sign-in form	               -----------------------------*/
 
 .sign-in {
-	transition: transform 0.5s ease;
-	width: auto;
+	width: 50%;
 	height: 100%;
 }
 
@@ -91,8 +97,16 @@ body {
 
 /* .sign-up from                  -----------------------------------*/
 
-.sign-up {
+.form-panel-slide {
+	display: flex;
+	width: 200%;
+	height: 100%;
 	transition: transform 0.5s ease;
+}
+
+
+.sign-up {
+	width: 50%;
 }
 
 .sign-up>.left-panel {
@@ -115,31 +129,29 @@ body {
 	font-weight: bold;
 }
 
-.sign-up>.form-panel {
+.form-panel {
+	width: 100%;
 	padding: 40px 30px;
 	background-color: white;
 	justify-content: center;
 	align-items: center;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	overflow-y: auto;
-	/* ✅ 스크롤 생기도록 */
-}
-
-.sign-up>.form-step {
-	display: none;
-	flex-direction: column;
-	gap: 12px;
-	animation: fadeIn 0.3s ease-in;
-}
-
-.form-step.active {
 	display: flex;
 }
+.form-step {
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
 
 input,
 select {
+	width: 80%;
 	border: none;
 	border-bottom: 1px solid #aaa;
 	background: transparent;
@@ -162,57 +174,11 @@ button.submit-button {
 .logo-img {
 	width: 80px;
 	margin-top: 20px;
-	display: block;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 .timeline {
-	margin-top: 20px;
-	display: flex;
-	justify-content: center;
-	gap: 10px;
+	bottom: 20px;
 }
 
-.paw-icon {
-	width: 24px;
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.error-message {
-	color: red;
-	text-align: center;
-	font-size: 13px;
-	margin-bottom: 10px;
-}
-
-
-.sign-in {
-	transform: translateX(0%);
-	z-index: 2;
-}
-
-.sign-up {
-	transform: translateX(100%);
-	z-index: 1;
-}
-
-.form-wrapper.active .sign-in {
-	transform: translateX(-100%);
-}
-
-.form-wrapper.active .sign-up {
-	transform: translateX(0%);
-	z-index: 2;
-}

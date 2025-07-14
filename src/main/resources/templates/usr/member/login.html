@@ -12,94 +12,139 @@
 <body>
 
 	<div class="form-wrapper flex-row overflow-hidden relative" id="form-wrapper">
+		<div class="form-slider">
+			<div class="sign-in flex w-full relative">
+				<!-- 로그인 폼 -->
+				<form class="left-panel h-full w-3/5" th:action="@{/usr/member/doLogin}" method="post">
+				    <h1>LOGIN</h1>
+				    
+				    <input type="text" name="loginId" placeholder="ID" required 
+				           th:value="${param.loginId}" />
+				    
+				    <input type="password" name="loginPw" placeholder="PW" required />
+				    
+				    <button class="sign-in-button" type="submit">sign in</button>
 
-		<div class="sign-in flex w-full absolute">
-			<!-- 로그인 폼 -->
-			<form class="left-panel h-full w-2/5" action="/usr/member/doLogin" method="post">
-				<h1>LOGIN</h1>
-				<input type="text" name="loginId" placeholder="ID" required>
-				<input type="password" name="loginPw" placeholder="PW" required>
-				<button class="sign-in-button" type="submit">sign in</button>
+				    <!-- 로고 이미지 -->
+				    <img class="logo-img" th:src="@{/img/logo.png}" alt="Aniwell Logo">
+				</form>
 
-				<!-- 로고 이미지 -->
-				<img class="logo-img" src="/img/logo.png" alt="Aniwell Logo">
-			</form>
+				<!-- 회원가입 버튼 -->
+				<div class="right-panel h-full w-2/5">
+				    <span class="sign-up-button" id="show-sign-up">회원가입</span>
+				</div>
 
-			<!-- 회원가입 버튼 -->
-			<div class="right-panel h-full w-3/5">
-				<span class="sign-up-button" id="show-sign-up">회원가입</span>				
-			</div>
-		</div>
-
-
-
-		<div class="sign-up flex overflow-hidden absolute h-full">
-			<!-- 왼쪽 패널 -->
-			<div class="left-panel w-3/5">
-				<span class="sign-in-button" id="show-sign-in">로그인</span>
 			</div>
 
-			<!-- 오른쪽 패널 -->
-			<form class="form-panel" action="/usr/member/doJoin" method="post" onsubmit="return validateForm()">
-				<c:if test="${param.error != null}">
-					<div class="error-message">${param.error}</div>
-				</c:if>
 
-				<!-- STEP 1 -->
-				<div class="form-step active" id="step1">
-					<h2>Create Account</h2>
-					<input type="text" name="loginId" placeholder="ID" required>
-					<input type="password" name="loginPw" placeholder="PW" required>
-					<input type="text" name="name" placeholder="NAME" required>
-					<input type="text" name="nickname" placeholder="NICKNAME" required>
-					<button type="button" class="next-button" onclick="goToStep(2)">다음</button>
+
+			<div class="sign-up flex h-full w-full relative">
+				<!-- 왼쪽 패널 -->
+				<div class="left-panel w-2/5">
+					<span class="sign-in-button" id="show-sign-in">로그인</span>
 				</div>
 
+				<!-- 오른쪽 패널 -->
+				<form class="form-panel overflow-hidden w-3/5 ralative"
+				      th:action="@{/usr/member/doJoin}" method="post"
+				      onsubmit="return validateForm()">
 
-				<!-- STEP 2 -->
-				<div class="form-step" id="step2">
-					<h2>Contact Info</h2>
-					<input type="text" name="cellphone" placeholder="PHONE NUMBER (000-0000-0000)" required>
-					<input type="email" name="email" placeholder="EMAIL" required>
-					<input type="text" name="address" placeholder="ADDRESS" required>
+				    <div class="form-panel-slide h-full flex ralative justify-around">
+				        
+				        <!-- STEP 1 -->
+				        <div class="form-step flex w-full h-full flex-col relative justify-around" id="step1">
+				            <h2>Create Account</h2>
+				            <input type="text" name="loginId" placeholder="ID" required
+				                   th:value="${param.loginId}" />
+				            <input type="password" name="loginPw" placeholder="PW" required />
+				            <input type="text" name="name" placeholder="NAME" required
+				                   th:value="${param.name}" />
+				            <input type="text" name="nickname" placeholder="NICKNAME" required
+				                   th:value="${param.nickname}" />
+				            <button type="button" class="next-button" onclick="goToStep(2)">다음</button>
+				        </div>
 
-					<select name="authName" onchange="updateAuthLevel()" required>
-						<option value="일반">일반</option>
-						<option value="수의사">수의사</option>
-					</select>
-					<input type="hidden" id="authLevel" name="authLevel" value="1">
+				        <!-- STEP 2 -->
+				        <div class="form-step flex w-full h-full flex-col relative justify-around" id="step2">
+				            <h2>Contact Info</h2>
+				            <input type="text" name="cellphone" placeholder="PHONE NUMBER (000-0000-0000)" required
+				                   th:value="${param.cellphone}" />
+				            <input type="email" name="email" placeholder="EMAIL" required
+				                   th:value="${param.email}" />
+				            <input type="text" name="address" placeholder="ADDRESS" required
+				                   th:value="${param.address}" />
 
-					<button type="button" class="prev-button" onclick="goToStep(1)">뒤로가기</button>
-					<button type="submit" class="submit-button">sign up</button>
-				</div>
+				            <select name="authName" onchange="updateAuthLevel()" required>
+				                <option value="일반" 
+				                    th:selected="${param.authName == '일반'}">일반</option>
+				                <option value="수의사" 
+				                    th:selected="${param.authName == '수의사'}">수의사</option>
+				            </select>
 
-				<!-- 발바닥 타임라인 -->
-				<div class="timeline">
-					<img id="paw1" class="paw-icon" src="/img/paw_active.png">
-					<img id="paw2" class="paw-icon" src="/img/paw_inactive.png">
-				</div>
+				            <input type="hidden" id="authLevel" name="authLevel" 
+				                   th:value="${param.authLevel ?: 1}" />
 
-				<!-- 로고 -->
-				<img class="logo-img" src="/img/logo.png" alt="Aniwell Logo">
-			</form>
+				            <button type="button" class="prev-button" onclick="goToStep(1)">뒤로가기</button>
+				            <button type="submit" class="submit-button">sign up</button>
+				        </div>
+				    </div>
+				</form>
+
+			</div>
 		</div>
 	</div>
 	<script src="https://cdn.tailwindcss.com"></script>
-	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 	<script>
-	document.addEventListener("DOMContentLoaded", () => {
-	  const container = document.getElementById('form-wrapper');
-	  const showSignUpBtn = document.getElementById('show-sign-up');
-	  const showSignInBtn = document.getElementById('show-sign-in');
+		$(document).ready(function () {
+			$('#show-sign-up').on('click', function () {
+				$('.form-slider').css('transform', 'translateX(-50%)');
+			});
 
-	  showSignUpBtn.addEventListener('click', () => {
-	    container.classList.add('active');
-	  });
+			$('#show-sign-in').on('click', function () {
+				$('.form-slider').css('transform', 'translateX(0)');
+			});
+		});
+	</script>
 
-	  showSignInBtn.addEventListener('click', () => {
-	    container.classList.remove('active');
-	  });
-	});
+
+	<script>
+		$(document).ready(function () {
+			$('.next-button').on('click', function () {
+				$('.form-panel-slide').css('transform', 'translateX(-100%)');
+			});
+
+			$('.prev-button').on('click', function () {
+				$('.form-panel-slide').css('transform', 'translateX(0)');
+			});
+		});
+
+
+		function goToStep(step) {
+			document.getElementById('step1').classList.remove('active');
+			document.getElementById('step2').classList.remove('active');
+			document.getElementById('step' + step).classList.add('active');
+
+			// 발바닥 이미지 교체
+			document.getElementById('paw1').src = step === 1 ? '/img/paw_active.png' : '/img/paw_inactive.png';
+			document.getElementById('paw2').src = step === 2 ? '/img/paw_active.png' : '/img/paw_inactive.png';
+		}
+
+		function updateAuthLevel() {
+			const auth = document.querySelector('[name="authName"]').value;
+			document.getElementById('authLevel').value = auth === '수의사' ? 9 : 1;
+		}
+
+		function validateForm() {
+			const phone = document.querySelector('[name="cellphone"]');
+			const phonePattern = /^\d{3}-\d{3,4}-\d{4}$/;
+			if (!phonePattern.test(phone.value)) {
+				alert("전화번호 형식이 올바르지 않습니다. 예: 000-0000-0000");
+				return false;
+			}
+			return true;
+		}
 	</script>
 
 </body>

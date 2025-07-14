@@ -126,6 +126,7 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 		ir.addPathPatterns("/usr/article/list");
 		ir.addPathPatterns("/usr/article/detail");
 
+
 //		로그아웃 필요
 		ir = registry.addInterceptor(needLogoutInterceptor);
 		ir.addPathPatterns("/usr/member/login");

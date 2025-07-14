@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 DROP DATABASE IF EXISTS `aniwell`;
 CREATE DATABASE `aniwell`;
@@ -151,10 +150,12 @@ CREATE TABLE walk_crew
     id          INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title       VARCHAR(100) NOT NULL,
     `description` TEXT         NOT NULL,
+    descriptoin TEXT         NOT NULL,
     district_id INT          NOT NULL COMMENT 'FK → district(id)',
     leaderId    INT(10) NOT NULL,
     createdAt   DATETIME     NOT NULL DEFAULT NOW()
 );
+
 
 ALTER TABLE `walk_crew_member`
 ADD COLUMN petId INT(10) AFTER memberId;
@@ -185,6 +186,31 @@ CREATE TABLE `article` (
   `delDate` DATETIME DEFAULT NULL COMMENT '삭제일',
  
   CONSTRAINT `fk_article_crew` FOREIGN KEY (`crewId`) REFERENCES `walk_crew` (`id`) ON DELETE CASCADE
+);
+
+
+
+-- BLE 기반 반려동물 활동 테이블
+CREATE TABLE pet_ble_activity
+(
+    id          INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    petId       INT(10) NOT NULL COMMENT 'FK',
+    zoneName    VARCHAR(100) NOT NULL COMMENT '화장실 , 밥그릇, 물그릇, 침대',
+    enteredAt   DATETIME     NOT NULL COMMENT '구역 진입 시간',
+    exitedAt    DATETIME     NOT NULL COMMENT '구역 나간 시간',
+    durationSec INT          NOT NULL COMMENT '구역 머문 시간',
+    rssi        INT(10) NOT NULL
+);
+
+
+-- 게시글 테이블
+CREATE TABLE article
+(
+    id         INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate    DATETIME  NOT NULL DEFAULT NOW(),
+    updateDate DATETIME  NOT NULL DEFAULT NOW(),
+    title      CHAR(100) NOT NULL,
+    `body`     TEXT      NOT NULL
 );
 
 
@@ -302,6 +328,7 @@ CREATE TABLE vaccine_schedule (
 ALTER TABLE calendar_event ADD COLUMN title VARCHAR(100) NOT NULL AFTER petId;
 
 
+
 ALTER TABLE walk_crew_member
 ADD COLUMN STATUS ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending' COMMENT '승인 상태';
 
@@ -328,6 +355,7 @@ isRead BOOLEAN NOT NULL DEFAULT FALSE  -- 읽음 여부
 );
 
 ALTER TABLE notification ADD senderId INT(10) UNSIGNED DEFAULT NULL;
+
 
 ############# 📜 테스트용 코드 ###################
 
@@ -378,6 +406,7 @@ INSERT INTO `article` (`regDate`, `updateDate`, `memberId`, `boardId`, `title`, 
 (NOW(), NOW(), 1, 1, '고양이 발정기 대처법', '고양이의 발정기 행동과 대처 방법을 알려드립니다.'),
 (NOW(), NOW(), 1, 1, '반려동물과 산책하기 좋은 장소', '서울에서 강아지와 산책하기 좋은 공원 소개.');
 
+
 -- ✅ 크루
 INSERT INTO `walk_crew` (`title`, `description`, `district_id`, `leaderId`, `createdAt`) VALUES
 ('댕모임', '댕댕이 모임', 1, 1, NOW()),
@@ -389,6 +418,7 @@ INSERT INTO `walk_crew_member` (`memberId`, `crewId`, `joinedAt`) VALUES
 (2, 2, NOW()),
 (2, 1, NOW()),
 (1, 1, NOW());
+
 
 -- ✅ QnA
 INSERT INTO `qna` (`memberId`, `title`, `body`, `isSecret`, `isFromUser`, `isAnswered`, `orderNo`, `regDate`, `updateDate`, `isActive`)
@@ -410,8 +440,11 @@ INSERT INTO `vaccine_schedule` (`vaccineName`, `intervalMonths`, `type`, `descri
 
 ############# 💣 트리거 ###################
 
+
 -- ✅ 백신 자동 계산 트리거(insert)
-DELIMITER $$
+
+-- ✅ 백신 자동 계산 트리거
+
 
 CREATE TRIGGER `auto_set_next_due_date`
 BEFORE INSERT ON `pet_vaccination`
@@ -432,6 +465,7 @@ BEGIN
 END$$
 
 DELIMITER ;
+
 
 -- ✅ 백신 자동 계산 트리거(update)
 DELIMITER $$
@@ -486,8 +520,6 @@ END$$
 DELIMITER ;
 
 
-
-=======
 DROP DATABASE IF EXISTS `aniwell`;
 CREATE DATABASE `aniwell`;
 USE `aniwell`;
@@ -899,5 +931,4 @@ END$$
 
 DELIMITER ;
 
->>>>>>> 7ad22cc (로그인/로그아웃페이지)
 ############# 💣 트리거 ###################
