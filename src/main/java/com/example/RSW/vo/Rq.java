@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.RSW.service.MemberService;
 import com.example.RSW.util.Ut;
@@ -135,4 +136,5 @@ public class Rq {
 	public boolean isAdmin() {
 		return getLoginedMember() != null && getLoginedMember().getAuthLevel() == 7;
 	}
+	
 }

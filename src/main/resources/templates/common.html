@@ -22,35 +22,39 @@
 			<div class="w-14 h-14 bg-[#2e576d] rounded-full shrink-0 overflow-hidden"></div>
 
 			<!-- 메뉴 아이콘 -->
-			<div class="flex flex-col gap-10 justify-center h-full">
+			<div class="flex flex-col gap-10 justify-center h-4/5">
 
 				<img src="https://res.cloudinary.com/decrm0hhf/image/upload/h_90,c_fill,q_auto,f_auto/v1752334976/cat_hand_w9zkku.png" alt="고양이 발" class="cat-paw absolute" id="cat-paw"/>
-							  
+				<div class="relative group pet_page">			  
+				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기" th:onclick="">
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+				</button>
+				<span class="tooltip group-hover:opacity-100">pet page</span>
+				</div>
+				
+				<div class="relative group my_page">
+				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기" th:onclick="|location.href='@{/usr/pet/list(memberId=${rq.loginedMember.id})}'|">
+					<span class="bar"></span>
+					<span class="bar"></span>
+					<span class="bar"></span>
+				</button>
+				<span class="tooltip group-hover:opacity-100">my page</span>
+				</div>
+				
+				<div class="relative group crew_page">
 				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기">
 					<span class="bar"></span>
 					<span class="bar"></span>
 					<span class="bar"></span>
 				</button>
-				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기">
-					<span class="bar"></span>
-					<span class="bar"></span>
-					<span class="bar"></span>
-				</button>
-				<button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기">
-					<span class="bar"></span>
-					<span class="bar"></span>
-					<span class="bar"></span>
-				</button>
+				<span class="tooltip group-hover:opacity-100">crew page</span>
+				</div>
 			</div>
 
 			<!-- 추가 여백 -->
-			<div class="flex-1"></div>
-
-			<!-- 예비 메뉴 버튼들 -->
-			<div class="space-y-2">
-				<button class="bg-lime-200 text-xs py-1 px-2 rounded-xl shadow">나의 정보</button>
-				<button class="bg-lime-200 text-xs py-1 px-2 rounded-xl shadow">산책 크루</button>
-			</div>
+			
 			<div class="mt-auto">
 				<img src="https://i.imgur.com/OJI4yzC.png" alt="paw" class="w-8">
 			</div>

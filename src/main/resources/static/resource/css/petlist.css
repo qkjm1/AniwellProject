@@ -1,0 +1,59 @@
+.swiper {
+	overflow: visible;
+	z-index: 5;
+}
+
+.swiper-slide {
+	transition: transform 0.5s ease, filter 0.5s ease;
+	position: relative;
+}
+.swiper-slide-active {
+	transform: scale(1);
+	filter: none;
+	z-index: 10;
+}
+
+.swiper-slide-prev,
+.swiper-slide-next {
+	transform: scale(0.9);
+	filter: blur(2px) brightness(0.9);
+	/* 흐림 + 어둡게 */
+	z-index: 1;
+}
+
+.swiper-slide::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 0.75rem;
+	background: rgba(0, 0, 0, 0.1);
+	filter: blur(8px);
+	opacity: 1;
+	transition: filter 0.5s ease, opacity 0.5s ease;
+	z-index: -1;
+}
+
+.swiper-slide-active::after {
+	opacity: 0;
+	filter: blur(0);
+}
+
+.swiper-slide.is-distant {
+	transform: scale(0.85);
+	filter: blur(3px) brightness(0.7);
+	transition: transform 0.5s ease, filter 0.5s ease, opacity 0.5s ease;
+	z-index: 0;
+}
+
+/* 제거 중인 상태 - 트랜지션 유도 */
+.swiper-slide.is-distant-leaving {
+	transform: scale(0.9); /* prev/next랑 동일 */
+	filter: blur(2px) brightness(0.9);
+}
+
+
+.line {
+	padding-top: 20px;
+	border-bottom: 1px solid #efefef;
+	width: 100%;
+}

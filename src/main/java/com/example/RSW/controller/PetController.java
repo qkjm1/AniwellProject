@@ -96,7 +96,7 @@ public class PetController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String eventsJson = objectMapper.writeValueAsString(events);
 		model.addAttribute("eventsJson", eventsJson); // 접종이벤트 내용 넘김
-		return "/usr/pet/petPage"; // JSP or Thymeleaf 페이지
+		return "usr/pet/petPage"; // JSP or Thymeleaf 페이지
 	}
 
 	// 등록한 펫 목록 / 가입한 크루 목록
