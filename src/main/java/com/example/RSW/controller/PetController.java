@@ -116,6 +116,21 @@ public class PetController {
 		model.addAttribute("crews", crews); // 해당 멤버가 가입한 크루목록
 		return "usr/pet/list"; // JSP or Thymeleaf 페이지
 	}
+	//petlist JSON방식으로 받아오
+	@RequestMapping("/api/pets")
+	@ResponseBody
+	public ResultData getPetList(@RequestParam("memberId") int memberId) {
+		int loginId = rq.getLoginedMemberId();
+		if (loginId != memberId) {
+			return ResultData.from("F-1", "권한이 없습니다.");
+		}
+		List<Pet> pets = petService.getPetsByMemberId(memberId);
+		List<WalkCrew> crews = walkCrewService.getWalkCrews(memberId);
+
+		Member loginesMember = rq.getLoginedMember();
+
+		return ResultData.from("S-1", "로그인멤버/펫/크루목록", "member", loginesMember, "pets", pets, "crews", crews ); // JSP or Thymeleaf 페이지
+	}
 
 	// 펫등록 페이지 이동
 	@RequestMapping("/usr/pet/join")

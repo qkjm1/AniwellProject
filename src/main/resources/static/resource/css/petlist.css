@@ -1,4 +1,5 @@
 .swiper {
+	width: 20%;
 	z-index: 5;
 }
 
@@ -52,7 +53,9 @@
 
 
 .line {
-	padding-top: 20px;
+	z-index: 5;
 	border-bottom: 1px solid #efefef;
 	width: 100%;
 }
+
+

@@ -18,7 +18,6 @@
 </head>
 
 <body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans">
-	<script th:src="@{/resource/js/card-list.js}"></script>
 	<!-- 🔻 BODY 끝에 추가 -->
 	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -27,32 +26,24 @@
 		<div th:replace="common :: siteHeader"></div>
 
 		<!-- Main content -->
-		<main class="main_page min-h-screen flex-1 p-6 grid grid-rows-5 gap-4">
+		<main class="main_page min-h-screen flex-1 p-6 grid grid-rows-5 gap-2 overflow-hidden">
 
 			<div class="row-span-2">
 				<div class="h-[250px]" id="root"></div>
 				<div class="line mx-auto text-center">
-					<div class="mb-2">
-						등록하기
+					<div class="mb-1 p-1">
+						<button
+							class="bg-yellow-200 hover:bg-yellow-300 text-black px-4 py-2 rounded-md shadow">등록하기</button>
 					</div>
 				</div>
 			</div>
-			<div class="privat_page row-span-3 grid grid-cols-5 gap-4 w-4/5 p-3 mx-auto">
-
-				<!-- 왼쪽 사이드바 (2열) -->
-				<aside class="col-span-1 rounded-xl content-center">
-					<!-- 사이드바 메뉴 등 -->
-					<ul class="space-y-2 flex flex-col">
-						<li><button class="w-full text-left shadow p-1">나의 정보</button></li>
-						<li><button class="w-full text-left shadow p-1">나의 크루</button></li>
-					</ul>
-				</aside>
+			<div class="privat_page row-span-3 w-full p-6 content-end">
 
 				<!-- 오른쪽 콘텐츠 영역 (3열) -->
-				<section class="col-span-4 bg-white p-4 rounded-xl shadow">
+				<section class="bg-white p-2">
 					<!-- 동적으로 바뀌는 콘텐츠 영역 -->
-					<div id="contentArea">
-						<iframe src="http://localhost:3001/mypage/my-page" width="100%" height="600" frameborder="0"></iframe>
+					<div id="contentArea" class="">
+						<iframe src="http://localhost:3001/my-page" width="100%" height="380" frameborder="0"></iframe>
 					</div>
 				</section>
 			</div>
@@ -62,47 +53,13 @@
 
 
 
-
+		<script th:src="@{/resource/js/card-list.js}"></script>
 		<script type="text/babel">
-
-			// ✅ 1. 반려동물 데이터 배열 // 요청넣어서 값 받아오기 (memberId로 검색해서 가지고온 pet 배)))
-			const pets = [
-				{
-					id: 1,
-					name: "떡걸룩",
-					breed: "코리안숏헤어",
-					gender: "암컷",
-					species: "겁이 많고 높은 데를 아주 좋아해요",
-					birthDate: "2020.01.01",
-					imageUrl: "https://i.imgur.com/vTaaRnh.png",
-					createdAt: "2025.07.05",
-				},
-				{
-					id: 2,
-					name: "망또",
-					breed: "푸들",
-					gender: "수컷",
-					species: "사람을 좋아해요",
-					birthDate: "2019.10.20",
-					imageUrl: "https://i.imgur.com/vTaaRnh.png",
-					createdAt: "2025.07.05",
-				},
-				{
-					id: 3,
-					name: "망또",
-					breed: "푸들",
-					gender: "수컷",
-					species: "사람을 좋아해요",
-					birthDate: "2019.10.20",
-					imageUrl: "https://i.imgur.com/vTaaRnh.png",
-					createdAt: "2025.07.05",
-				},
-			];
 
 			// ✅ 2. PetCard 컴포넌트 정의
 			function PetCard({pet}) {
 				return (
-					<div className="ani-card bg-white aspect-[1/1.6] w-[400px] rounded-xl p-6 shadow">
+					<div className="ani-card bg-white aspect-[1/1.6] w-[420px] rounded-xl p-6 shadow">
 						<h2 className="text-2xl font-bold flex items-center gap-1 mb-4 justify-center">
 							<span className="text-3xl">🐾</span> 반려동물등록증
 						</h2>
@@ -111,7 +68,7 @@
 							<div>
 								<div className="space-y-1 text-sm">
 									<div><span className="font-semibold mr-2">이름:</span> {pet.name}</div>
-									<div><span className="font-semibold mr-2">등록번호:</span> {pet.id}</div>
+									<div><span className="font-semibold mr-2">번호:</span> {pet.id}</div>
 									<div><span className="font-semibold mr-2">품종:</span> {pet.breed}</div>
 									<div><span className="font-semibold mr-2">성별:</span> {pet.gender}</div>
 								</div>
@@ -124,7 +81,7 @@
 
 							<div className="flex justify-center items-start">
 								<img
-									src={pet.imageUrl}
+									src={pet.photo}
 									alt="cat"
 									className="w-[100px] h-[100px] object-cover rounded-xl border"
 								/>
@@ -140,13 +97,29 @@
 			}
 
 			function App() {
+				const [pets, setPets] = React.useState([])
+
+				React.useEffect(() => {
+					fetch('/api/pets?memberId=1')
+					  .then(res => res.json())
+					  .then((data) => {
+						console.log(data)
+						console.log("petlist: ", data.data2);
+					    setPets(data.data2 || []); // ← 정확히 'pets'를 받아야 함
+					  });
+				  }, [])
+				  
+				const TOTAL_CARD_COUNT = 3
+				const petList = [...pets, ...Array(TOTAL_CARD_COUNT - pets.length).fill(null)]
+
 				React.useEffect(() => {
 					const swiper = new Swiper('.mySwiper', {
 						centeredSlides: true,
-						slidesPerView: 'auto', // ✅ 'auto'로 변경
+						slidesPerView: 'auto', 
 						spaceBetween: -200,
 						loop: false,
 						grabCursor: true,
+						effect: 'coverflow',
 						on: {
 							slideChangeTransitionEnd() {
 								const allSlides = document.querySelectorAll('.swiper-slide');
@@ -196,13 +169,23 @@
 
 				return (
 					<div className="w-full flex justify-center">
-						<div className="swiper mySwiper max-w-[1000px] w-full overflow-hidden">
+						<div className="swiper mySwiper max-w-[1000px] w-full overflow-visible">
 							<div className="swiper-wrapper">
-								{pets.map((pet) => (
-									<div className="swiper-slide w-[400px]" key={pet.id}>
-										<PetCard pet={pet} />
-									</div>
-								))}
+								{petList.map((pet, idx) =>
+								  pet ? (
+								    <div className="swiper-slide w-[400px]" key={pet.id}>
+								      <PetCard pet={pet} />
+								    </div>
+								  ) : (
+								    <div className="swiper-slide w-[400px] opacity-30" key={`empty-${idx}`}>
+								      {/* 빈 카드 또는 Placeholder */}
+								      <div className="ani-card bg-gray-100 aspect-[1/1.6] w-[400px] rounded-xl p-6 shadow flex items-center justify-center text-gray-500">
+								        등록된 펫이 없습니다
+								      </div>
+								    </div>
+								  )
+								)}
+
 							</div>
 						</div>
 					</div>

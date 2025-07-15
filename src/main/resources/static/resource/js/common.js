@@ -15,3 +15,26 @@ btn.addEventListener('click', () => {
 	    }
 });
 
+
+// sidebar.js
+document.querySelectorAll('.menu-item').forEach((item) => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page
+    let url = ''
+
+    switch (page) {
+      case 'pet':
+        url = `/usr/pet/petPage?petId=1` // 로그인 ID로 교체 가능
+        break
+      case 'my':
+        url = `/usr/pet/list?memberId=1`
+        break
+      case 'crew':
+        url = `/crew`
+        break
+    }
+
+    window.parent.location.href = url
+  })
+})
+
