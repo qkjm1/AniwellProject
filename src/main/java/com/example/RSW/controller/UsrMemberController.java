@@ -238,16 +238,8 @@ public class UsrMemberController {
         Rq rq = (Rq) req.getAttribute("rq");
         Member loginedMember = rq.getLoginedMember();
 
-<<<<<<< HEAD
-        VetCertificate cert = vetCertificateService.getCertificateByMemberId(loginedMember.getId());
-        model.addAttribute("cert", cert);
 
-        model.addAttribute("member", loginedMember);
-
-        return "usr/member/myPage";
-=======
         return loginedMember;
->>>>>>> 23b999e (react 활용/ 마이페이지 로직 json으로 살짝 변경)
     }
 
     @RequestMapping("/usr/member/checkPw")
