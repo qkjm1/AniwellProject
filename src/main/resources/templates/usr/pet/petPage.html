@@ -73,15 +73,15 @@
 			<aside class="col-span-4 flex flex-col gap-4">
 
 				<!-- 고양이 일러스트 -->
-				<div class="bg-white rounded-xl p-4 flex flex-col items-center h-full shadow">
+				<div class="tD_ani bg-white rounded-xl p-4 flex flex-col items-center shadow h-full">
 					<p class="text-sm text-gray-600 mb-2">똥냥이!</p>
 					<img src="https://i.imgur.com/qYhSSXR.png" alt="cat" class="w-24">
 				</div>
 
 				<!-- 등록증 -->
-				<div class="w-full bg-white rounded-xl max-w-4xl p-6 shadow h-3/5">
+				<div class="ani-card w-full bg-white rounded-xl max-w-4xl p-6 shadow">
 					<!-- 제목 -->
-					<h2 class="text-2xl font-bold flex items-center gap-2 mb-4">
+					<h2 class="text-2xl font-bold flex items-center gap-1 mb-4">
 						<span class="text-3xl">🐾</span> 반려동물등록증
 					</h2>
 
@@ -90,7 +90,7 @@
 
 						<!-- 1열 -->
 						<div>
-							<div class="space-y-2 text-sm">
+							<div class="space-y-1 text-sm">
 								<div><span class="font-semibold mr-2">이름:</span> <span th:text="${pet.name}">떡걸룩</span>
 								</div>
 								<div><span class="font-semibold mr-2">등록번호:</span> <span
@@ -102,14 +102,14 @@
 							</div>
 
 							<!-- 특징: grid 밖에 위치 -->
-							<div class="mt-4 text-sm">
+							<div class="mt-1 text-sm">
 								<span class="font-semibold mr-2">특징:</span>
 								<span th:text="${pet.species}">겁이 많고 높은 데를 아주 좋아해요</span>
 							</div>
 						</div>
 
 						<!-- 2열 -->
-						<div class="space-y-2 text-sm">
+						<div class="space-y-1 text-sm">
 							<div><span class="font-semibold mr-2">생일:</span> <span
 									th:text="${pet.birthDate}">2020.01.01</span></div>
 							<div><span class="font-semibold mr-2">중성화:</span> <span>완료</span>
@@ -124,7 +124,7 @@
 					</div>
 
 					<!-- 등록일 -->
-					<div class="createdAt text-right text-xs text-gray-500 mt-6">2025.07.05</div>
+					<div class="createdAt text-right text-xs text-gray-500 mt-2">2025.07.05</div>
 				</div>
 
 

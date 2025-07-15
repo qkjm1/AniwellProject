@@ -14,3 +14,11 @@
 .createdAt {
 	border-top: 2px solid lemonchiffon;
 }
+
+.tD_ani{
+	min-height: 200px;
+}
+
+.ani-card {
+	max-height: 230px;
+}
