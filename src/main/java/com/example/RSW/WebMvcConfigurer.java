@@ -5,6 +5,7 @@ import com.example.RSW.interceptor.NeedLoginInterceptor;
 import com.example.RSW.interceptor.NeedLogoutInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -24,8 +25,19 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 	@Autowired
 	NeedLogoutInterceptor needLogoutInterceptor;
 
-	// 인터셉터 등록(적용)
-	public void addInterceptors(InterceptorRegistry registry) {
+    // ✅ CORS 설정 추가
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3001")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true);
+    }
+    
+    
+
+    // 인터셉터 등록(적용)
+    public void addInterceptors(InterceptorRegistry registry) {
 //		registry.addInterceptor(beforeActionInterceptor).addPathPatterns("/**").excludePathPatterns("/resource/**")
 //				.excludePathPatterns("/error");
 //
