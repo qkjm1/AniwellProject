@@ -27,36 +27,35 @@
 		<div th:replace="common :: siteHeader"></div>
 
 		<!-- Main content -->
-		<main class="main_page min-h-screen flex-1 p-6 grid grid-rows-4 gap-4">
+		<main class="main_page min-h-screen flex-1 p-6 grid grid-rows-5 gap-4">
 
 			<div class="row-span-2">
 				<div class="h-[250px]" id="root"></div>
-				<div class="line mx-auto"></div>
+				<div class="line mx-auto text-center">
+					<div class="mb-2">
+						등록하기
+					</div>
+				</div>
 			</div>
-			<div class="privat_page row-span-2 grid grid-cols-5 gap-4">
+			<div class="privat_page row-span-3 grid grid-cols-5 gap-4 w-4/5 p-3 mx-auto">
 
 				<!-- 왼쪽 사이드바 (2열) -->
-				<aside class="col-span-2 bg-gray-100 p-4 rounded-xl shadow">
+				<aside class="col-span-1 rounded-xl content-center">
 					<!-- 사이드바 메뉴 등 -->
 					<ul class="space-y-2 flex flex-col">
-						<li><button class="w-full text-left">메뉴 1</button></li>
-						<li><button class="w-full text-left">메뉴 2</button></li>
-						<li><button class="w-full text-left">메뉴 3</button></li>
+						<li><button class="w-full text-left shadow p-1">나의 정보</button></li>
+						<li><button class="w-full text-left shadow p-1">나의 크루</button></li>
 					</ul>
 				</aside>
 
 				<!-- 오른쪽 콘텐츠 영역 (3열) -->
-				<section class="col-span-3 bg-white p-4 rounded-xl shadow">
+				<section class="col-span-4 bg-white p-4 rounded-xl shadow">
 					<!-- 동적으로 바뀌는 콘텐츠 영역 -->
 					<div id="contentArea">
-						<!-- 예: 기본 콘텐츠 혹은 탭 콘텐츠 -->
-						<p>여기에 콘텐츠가 표시됩니다.</p>
+						<iframe src="http://localhost:3001/mypage/my-page" width="100%" height="600" frameborder="0"></iframe>
 					</div>
 				</section>
-
-
 			</div>
-
 		</main>
 
 
@@ -197,7 +196,7 @@
 
 				return (
 					<div className="w-full flex justify-center">
-						<div className="swiper mySwiper max-w-[700px] w-full overflow-visible">
+						<div className="swiper mySwiper max-w-[1000px] w-full overflow-hidden">
 							<div className="swiper-wrapper">
 								{pets.map((pet) => (
 									<div className="swiper-slide w-[400px]" key={pet.id}>
