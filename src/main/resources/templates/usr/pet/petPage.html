@@ -146,6 +146,13 @@
 
 	<script>
 		renderMiniCalendar('calendar-container');
+		
+		const urlParams = new URLSearchParams(window.location.search);
+		const petId = urlParams.get("petId");
+
+		if (petId) {
+			console.log("선택된 펫 ID:", petId);
+		}
 	</script>
 
 	<script>

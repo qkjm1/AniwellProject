@@ -7,34 +7,68 @@ let isVisible = false;
 btn.addEventListener('click', () => {
 	isVisible = !isVisible;
 	if (isVisible) {
-	      paw.classList.remove('left-[-100%]');
-	      paw.classList.add('left-0');
-	    } else {
-	      paw.classList.remove('left-0');
-	      paw.classList.add('left-[-100%]');
-	    }
+		paw.classList.remove('left-[-100%]');
+		paw.classList.add('left-0');
+	} else {
+		paw.classList.remove('left-0');
+		paw.classList.add('left-[-100%]');
+	}
 });
 
 
-// sidebar.js
+
+function App() {
+	const [pets, setPets] = React.useState([null])
+	const [loginedMember, setLoginedMember] = React.useState(null)
+	const [crew, setCrew] = React.useState(null)
+
+	window.localStorage.setItem("loginedMemberId", loginedMember?.id);
+
+	React.useEffect(() => {
+		fetch(`/usr/member/myPage`)
+			.then(res => res.json())
+			.then((memberData) => {
+				console.log("로그인 멤버:", memberData);
+				setLoginedMember(memberData);
+				window.localStorage.setItem("loginedMemberId", memberData.id);
+			});
+	}, []);
+
+	React.useEffect(() => {
+		fetch(`/api/pets?memberId=${loginedMember?.id}`)
+			.then(res => res.json())
+			.then((data) => {
+				console.log(data)
+				console.log("petlist: ", data.data2)
+				setPets(data.data2 || []); // ← 정확히 'pets'를 받아야 함
+				setCrew(data.data3 || []);
+			});
+	}, [loginedMember])
+	// sidebar.js
+
+};
+
 document.querySelectorAll('.menu-item').forEach((item) => {
-  item.addEventListener('click', () => {
-    const page = item.dataset.page
-    let url = ''
+	item.addEventListener('click', () => {
+		const page = item.dataset.page
+		let url = ''
+		const petId = window.localStorage.getItem('selectedPetId');
+		const loginedMemberId = window.localStorage.getItem('loginedMember');
+		switch (page) {
+			case 'pet':
+				url = `/usr/pet/petPage?petId=${petId}` // 로그인 ID로 교체 가능
+				break
+			case 'my':
+				url = `/usr/pet/list?memberId=${loginedMemberId}`
+				break
+			case 'crew':
+				url = `/crew`
+				break
+		}
 
-    switch (page) {
-      case 'pet':
-        url = `/usr/pet/petPage?petId=1` // 로그인 ID로 교체 가능
-        break
-      case 'my':
-        url = `/usr/pet/list?memberId=1`
-        break
-      case 'crew':
-        url = `/crew`
-        break
-    }
-
-    window.parent.location.href = url
-  })
+		window.parent.location.href = url
+	})
 })
+
+
 
