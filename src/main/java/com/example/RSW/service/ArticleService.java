@@ -182,4 +182,8 @@ public class ArticleService {
 		return articleRepository.getRecentArticlesByCrewAndBoardId(crewId, boardId, limit);
 	}
 
+	public List<Article> getArticlesByCrewIdAndBoardId(Integer crewId, Integer boardId) {
+		return articleRepository.getArticlesByCrewIdAndBoardId(crewId, boardId);
+	}
+
 }

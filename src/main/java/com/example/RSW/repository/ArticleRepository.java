@@ -57,4 +57,6 @@ public interface ArticleRepository {
 			@Param("limit") int limit);
 
 	public List<Article> getRecentArticlesByCrewAndBoardId(int crewId, int boardId, int limit);
+
+	public List<Article> getArticlesByCrewIdAndBoardId(Integer crewId, Integer boardId);
 }

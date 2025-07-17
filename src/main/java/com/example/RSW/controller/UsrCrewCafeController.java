@@ -25,6 +25,7 @@ import com.example.RSW.repository.DistrictRepository;
 import com.example.RSW.service.ArticleService;
 import com.example.RSW.service.DistrictService;
 import com.example.RSW.service.MemberService;
+import com.example.RSW.service.WalkCrewMemberService;
 import com.example.RSW.service.WalkCrewService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +45,9 @@ public class UsrCrewCafeController {
 	@Autowired
 	private WalkCrewService walkCrewService;
 
+	@Autowired
+	private WalkCrewMemberService walkCrewMemberService;
+
 	@GetMapping("")
 	public String showCafeMain(@RequestParam(required = false) Integer crewId, Model model) {
 		if (crewId == null) {
@@ -54,7 +58,7 @@ public class UsrCrewCafeController {
 
 	// 까페홈에 article 글 보이게 하기
 	@GetMapping("/cafeHome")
-	public String showCafeHome(@RequestParam int crewId, Model model, HttpServletRequest req) {
+	public String showCafeHome(@RequestParam(defaultValue = "0") int crewId, Model model, HttpServletRequest req) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		WalkCrew crew = walkCrewService.getCrewById(crewId);
 
@@ -96,4 +100,29 @@ public class UsrCrewCafeController {
 		return "usr/crewCafe/cafeHome";
 	}
 
+	// ✅ 내가 가입한 크루의 카페로 이동
+	@GetMapping("/myCrewCafe")
+	public String goToMyCrewCafe(HttpServletRequest req, Model model) {
+		Rq rq = (Rq) req.getAttribute("rq");
+		int memberId = rq.getLoginedMemberId();
+
+		WalkCrew myCrew = walkCrewService.getCrewByLeaderId(memberId);
+		if (myCrew == null) {
+			myCrew = walkCrewMemberService.getMyCrew(memberId);
+		}
+
+		if (myCrew == null) {
+			return rq.historyBackOnView("가입된 크루가 없습니다.");
+		}
+
+		// ❌ 이거 때문에 리스트로 감
+		// return "redirect:/usr/article/list?crewId=" + myCrew.getId();
+
+		// ✅ 이렇게 수정!
+		model.addAttribute("crew", myCrew);
+		List<Article> articles = articleService.getArticlesByCrewId(myCrew.getId());
+		model.addAttribute("articles", articles);
+
+		return "redirect:/usr/crewCafe/cafeHome?crewId=" + myCrew.getId(); // ✅ 요거만 바꾸면 됨
+	}
 }

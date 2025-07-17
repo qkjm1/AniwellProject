@@ -36,9 +36,9 @@
 		<c:if test="${not empty crewId}">
 			<input type="hidden" name="crewId" value="${crewId}" />
 			<input type="hidden" name="type" value="${type}" />
-
+			<input type="hidden" name="boardId" value="${boardId}" />
 			<!-- ✅ boardId도 반드시 함께 넘겨야 함 (예: 크루 게시판은 boardId 3) -->
-			<input type="hidden" name="boardId" value="3" />
+			<!-- <input type="hidden" name="boardId" value="3" /> -->
 		</c:if>
 
 

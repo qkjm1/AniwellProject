@@ -241,11 +241,24 @@
 		resultType="com.example.RSW.vo.Article">
 		SELECT *
 		FROM article
-		WHERE crewId = #{crewId} AND boardId = #{boardId} AND delStatus = 0
+		WHERE crewId = #{crewId}
+		AND boardId = #{boardId}
+		AND delStatus = 0
 		ORDER BY id DESC
 		LIMIT #{limit}
 	</select>
 	<!-- @formatter:on -->
+
+	<!-- ✅ 특정 크루 ID와 게시판 ID에 해당하는 게시글 목록 조회 -->
+	<select id="getArticlesByCrewIdAndBoardId" resultType="Article">
+		SELECT *
+		FROM article
+		WHERE crewId = #{crewId}
+		AND boardId = #{boardId}
+		AND
+		delStatus = 0
+		ORDER BY id DESC
+	</select>
 
 
 

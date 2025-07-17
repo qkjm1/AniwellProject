@@ -119,31 +119,7 @@ public class UsrWalkCrewMemberController {
 		return "usr/walkCrew/requestDetail";
 	}
 
-	// ✅ 내가 가입한 크루의 카페로 이동
-	@GetMapping("/myCrewCafe")
-	public String goToMyCrewCafe(HttpServletRequest req, Model model) {
-		Rq rq = (Rq) req.getAttribute("rq");
-		int memberId = rq.getLoginedMemberId();
 
-		WalkCrew myCrew = walkCrewService.getCrewByLeaderId(memberId);
-		if (myCrew == null) {
-			myCrew = walkCrewMemberService.getMyCrew(memberId);
-		}
-
-		if (myCrew == null) {
-			return rq.historyBackOnView("가입된 크루가 없습니다.");
-		}
-
-		// ❌ 이거 때문에 리스트로 감
-		// return "redirect:/usr/article/list?crewId=" + myCrew.getId();
-
-		// ✅ 이렇게 수정!
-		model.addAttribute("crew", myCrew);
-		List<Article> articles = articleService.getArticlesByCrewId(myCrew.getId());
-		model.addAttribute("articles", articles);
-
-		return "usr/crewCafe/cafeHome"; // ✅ 진짜 카페 홈으로 이동
-	}
 
 	// ✅ 참가 신청 수락 처리
 	@PostMapping("/approve")

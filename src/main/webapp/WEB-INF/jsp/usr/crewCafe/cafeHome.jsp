@@ -110,7 +110,7 @@ ul.article-preview img {
 				<a class="write-button" href="/usr/article/write?crewId=${crew.id}&boardId=1">✏️ 공지 작성</a>
 			</div>
 			<ul class="article-preview">
-				<c:forEach var="article" items="${noticeArticles}" begin="0" end="0">
+				<c:forEach var="article" items="${noticeArticles}">
 					<li>
 						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title} (
 							${fn:substring(article.regDate, 0, 10)} ) </a>
@@ -129,7 +129,7 @@ ul.article-preview img {
 				<a class="write-button" href="/usr/article/write?crewId=${crew.id}&boardId=3">✏️ 자유 글쓰기</a>
 			</div>
 			<ul class="article-preview">
-				<c:forEach var="article" items="${freeArticles}" begin="0" end="0">
+				<c:forEach var="article" items="${freeArticles}">
 					<li>
 						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title} (
 							${fn:substring(article.regDate, 0, 10)} ) </a>
@@ -148,7 +148,7 @@ ul.article-preview img {
 				<a class="write-button" href="/usr/article/write?crewId=${crew.id}&boardId=4">📤 사진 업로드</a>
 			</div>
 			<ul class="article-preview">
-				<c:forEach var="article" items="${galleryArticles}" begin="0" end="0">
+				<c:forEach var="article" items="${galleryArticles}">
 					<li>
 						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}">
 							<c:if test="${not empty article.imageUrl}">

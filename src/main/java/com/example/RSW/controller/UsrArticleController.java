@@ -70,6 +70,7 @@ public class UsrArticleController {
 			model.addAttribute("crew", crew);
 			model.addAttribute("crewId", crewId);
 			model.addAttribute("type", type);
+			model.addAttribute("boardId", boardId);
 
 			System.out.println("✅ 글쓰기 진입 성공 (크루)");
 			return "usr/article/write";
@@ -81,8 +82,6 @@ public class UsrArticleController {
 			System.out.println("📌 기본 boardId 할당됨 = " + boardId);
 		}
 
-		
-		model.addAttribute("boardId", boardId);
 		System.out.println("✅ 글쓰기 진입 성공 (일반)");
 		return "usr/article/write";
 	}
@@ -202,6 +201,23 @@ public class UsrArticleController {
 
 		Rq rq = (Rq) req.getAttribute("rq");
 
+		// ✅ crewId와 boardId가 모두 있을 경우 (크루 게시판 구분된 글)
+		if (crewId != null && boardId != null) {
+			WalkCrew crew = walkCrewService.getCrewById(crewId);
+			Board board = boardService.getBoardById(boardId);
+			if (crew == null || board == null) {
+				return rq.historyBackOnView("존재하지 않는 크루 또는 게시판");
+			}
+
+			List<Article> articles = articleService.getArticlesByCrewIdAndBoardId(crewId, boardId);
+			model.addAttribute("crew", crew);
+			model.addAttribute("board", board);
+			model.addAttribute("articles", articles);
+			model.addAttribute("page", page);
+			return "usr/article/list";
+		}
+
+		// ✅ crewId만 있는 경우 (크루 전체 글 보기)
 		if (crewId != null) {
 			WalkCrew crew = walkCrewService.getCrewById(crewId);
 			List<Article> articles = articleService.getArticlesByCrewId(crewId);
@@ -210,6 +226,7 @@ public class UsrArticleController {
 			return "usr/article/list";
 		}
 
+		// ✅ 일반 게시판 (공지사항 등)
 		if (boardId != null) {
 			Board board = boardService.getBoardById(boardId);
 			if (board == null) {
