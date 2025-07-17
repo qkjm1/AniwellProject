@@ -46,7 +46,20 @@
 		SELECT COUNT(*)
 		FROM walk_crew_member
 		WHERE memberId = #{memberId}
-		AND crewId = #{crewId}
+		AND crewId =
+		#{crewId}
 	</select>
+
+	<!-- ✅ 승인된 크루 멤버인지 확인하는 쿼리 - 특정 크루(crew_id)에서 특정 사용자(member_id)가 'approved' 
+		상태인지 여부를 판단하기 위해 사용 - 결과는 COUNT(*)로 반환 → 0이면 승인 안 됨, 1 이상이면 승인됨 -->
+	<select id="countApprovedMember" resultType="int">
+		SELECT COUNT(*)
+		FROM walk_crew_member
+		WHERE crewId = #{crewId}
+		AND memberId = #{memberId}
+		AND status = 'approved'         <!-- ✅ 승인 상태 -->
+	</select>
+
+
 
 </mapper>

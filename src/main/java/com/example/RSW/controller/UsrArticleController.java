@@ -56,38 +56,58 @@ public class UsrArticleController {
 		System.out.println("📌 crewId = " + crewId);
 		System.out.println("📌 loginedMemberId = " + rq.getLoginedMemberId());
 
-		// ✅ crew 글쓰기 처리
+		// ✅ 크루 글쓰기 처리일 경우
 		if (crewId != null) {
 			WalkCrew crew = walkCrewService.getCrewById(crewId);
 
-			if (crew == null)
-				return "common/notFound";
+			// ❌ 존재하지 않는 크루인 경우
+			if (crew == null) {
+				req.setAttribute("msg", "F-1 / 존재하지 않는 크루입니다.");
+				req.setAttribute("historyBack", true);
+				return "common/js"; // JS를 이용한 경고 후 이전 페이지로
+			}
 
+			// ❌ 승인되지 않은 멤버인 경우
 			boolean isApproved = walkCrewService.isApprovedMember(crewId, rq.getLoginedMemberId());
-			if (!isApproved)
-				return "common/permissionDenied";
+			if (!isApproved) {
+				req.setAttribute("msg", "F-2 / 승인된 크루 멤버만 글쓰기 가능합니다.");
+				req.setAttribute("historyBack", true);
+				return "common/js";
+			}
 
+			// ❌ 공지사항 게시판인데 크루장이 아닌 경우
+			if (boardId != null && boardId == 1) {
+				boolean isLeader = walkCrewService.isCrewLeader(crewId, rq.getLoginedMemberId());
+				if (!isLeader) {
+					req.setAttribute("msg", "F-3 / 공지사항은 크루장만 작성할 수 있습니다.");
+					req.setAttribute("historyBack", true);
+					return "usr/common/js";
+
+				}
+			}
+
+			// ✅ 크루 정보와 게시판 정보 JSP로 전달
 			model.addAttribute("crew", crew);
 			model.addAttribute("crewId", crewId);
 			model.addAttribute("type", type);
 			model.addAttribute("boardId", boardId);
 
 			System.out.println("✅ 글쓰기 진입 성공 (크루)");
-			return "usr/article/write";
+			return "usr/article/write"; // 글쓰기 JSP 페이지로 이동
 		}
 
-		// ✅ boardId가 없는 경우 기본값 설정 (예: 2번 게시판)
+		// ✅ 일반 게시판일 경우 boardId가 없으면 기본값으로 설정
 		if (boardId == null) {
-			boardId = 2; // ← 원하는 기본 게시판 ID로 지정
+			boardId = 2;
 			System.out.println("📌 기본 boardId 할당됨 = " + boardId);
 		}
 
 		System.out.println("✅ 글쓰기 진입 성공 (일반)");
-		return "usr/article/write";
+		return "usr/article/write"; // 일반 글쓰기 JSP로 이동
 	}
 
 	@RequestMapping("/usr/article/doWrite")
-	@ResponseBody
+
 	public String doWrite(HttpServletRequest req, @RequestParam(required = false) Integer boardId,
 			@RequestParam(required = false) Integer crewId, @RequestParam String title, @RequestParam String body,
 			Model model) {
@@ -96,7 +116,16 @@ public class UsrArticleController {
 		int loginedMemberId = rq.getLoginedMemberId();
 
 		ResultData rd;
+
 		if (crewId != null) {
+			// 🔧 공지사항 게시판이면 크루장만 작성 가능
+			if (boardId != null && boardId == 1) {
+				boolean isLeader = walkCrewService.isCrewLeader(crewId, loginedMemberId);
+				if (!isLeader) {
+					return Ut.jsHistoryBack("F-3", "공지사항은 크루장만 작성할 수 있습니다.");
+				}
+			}
+
 			rd = articleService.writeCrewArticle(boardId, crewId, loginedMemberId, title, body);
 			return Ut.jsReplace(rd.getResultCode(), rd.getMsg(),
 					"../article/detail?id=" + rd.getData1() + "&crewId=" + crewId);

@@ -106,4 +106,14 @@ public class WalkCrewService {
 		return walkCrewRepository.findByLeaderId(leaderId);
 	}
 
+	// 크루장만 공지사항쓸수 있다.
+	public boolean isCrewLeader(int crewId, int memberId) {
+		WalkCrew crew = getCrewById(crewId);
+		if (crew == null)
+			return false;
+
+		// ✅ 이 로직은 VO가 아니라 서비스 내부에 위치해야 합니다
+		return crew.getLeaderId() == memberId;
+	}
+
 }

@@ -59,4 +59,8 @@ public interface ArticleRepository {
 	public List<Article> getRecentArticlesByCrewAndBoardId(int crewId, int boardId, int limit);
 
 	public List<Article> getArticlesByCrewIdAndBoardId(Integer crewId, Integer boardId);
+
+	// 메인홈 / 까페 공지사항 구분하기
+	List<Article> getNoticeArticlesByBoardId(@Param("boardId") int boardId, @Param("limit") int limit);
+
 }

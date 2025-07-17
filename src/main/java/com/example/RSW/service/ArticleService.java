@@ -9,6 +9,7 @@ import com.example.RSW.repository.ArticleRepository;
 import com.example.RSW.util.Ut;
 import com.example.RSW.vo.Article;
 import com.example.RSW.vo.ResultData;
+import com.example.RSW.vo.WalkCrew;
 
 @Service
 public class ArticleService {
@@ -185,5 +186,11 @@ public class ArticleService {
 	public List<Article> getArticlesByCrewIdAndBoardId(Integer crewId, Integer boardId) {
 		return articleRepository.getArticlesByCrewIdAndBoardId(crewId, boardId);
 	}
+
+	// 메인홈 / 까페 공지사항 구분하기
+	public List<Article> getNoticeArticlesByBoardId(int boardId, int limit) {
+		return articleRepository.getNoticeArticlesByBoardId(boardId, limit);
+	}
+
 
 }
