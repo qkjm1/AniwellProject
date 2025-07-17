@@ -10,7 +10,7 @@ import com.example.RSW.vo.Article;
 @Mapper
 public interface ArticleRepository {
 
-	public int writeArticle(int memberId, String title, String body, String boardId);
+	public int writeArticle(int memberId, String title, String body, String imageUrl, String boardId);
 
 	public void deleteArticle(int id);
 
@@ -51,7 +51,8 @@ public interface ArticleRepository {
 
 	// 크루용 리포지터리
 	void insertCrewArticle(@Param("boardId") Integer boardId, @Param("crewId") Integer crewId,
-			@Param("memberId") int memberId, @Param("title") String title, @Param("body") String body);
+			@Param("memberId") int memberId, @Param("title") String title, @Param("body") String body,
+			@Param("imageUrl") String imageUrl);
 
 	List<Article> findRecentArticlesByCrewAndType(@Param("crewId") int crewId, @Param("typeCode") String typeCode,
 			@Param("limit") int limit);

@@ -265,12 +265,15 @@
 
 	<!-- ✅ 일반 공지사항 전용 쿼리 (crewId가 NULL인 게시글만) -->
 	<select id="getNoticeArticlesByBoardId" resultType="Article">
-		SELECT A.*, M.nickname AS extra__writer
+		SELECT A.*,
+		M.nickname AS extra__writer
 		FROM article AS A
-		INNER JOIN member AS M ON A.memberId = M.id
+		INNER JOIN member AS M ON
+		A.memberId = M.id
 		WHERE A.boardId = #{boardId}
 		AND A.delStatus = 0
-		AND A.crewId IS NULL
+		AND
+		A.crewId IS NULL
 		ORDER BY A.id DESC
 		LIMIT #{limit}
 	</select>

@@ -110,7 +110,7 @@ public class UsrArticleController {
 
 	public String doWrite(HttpServletRequest req, @RequestParam(required = false) Integer boardId,
 			@RequestParam(required = false) Integer crewId, @RequestParam String title, @RequestParam String body,
-			Model model) {
+			@RequestParam(required = false) String imageUrl, Model model) {
 
 		Rq rq = (Rq) req.getAttribute("rq");
 		int loginedMemberId = rq.getLoginedMemberId();
@@ -126,11 +126,11 @@ public class UsrArticleController {
 				}
 			}
 
-			rd = articleService.writeCrewArticle(boardId, crewId, loginedMemberId, title, body);
+			rd = articleService.writeCrewArticle(boardId, crewId, loginedMemberId, title, body, imageUrl);
 			return Ut.jsReplace(rd.getResultCode(), rd.getMsg(),
 					"../article/detail?id=" + rd.getData1() + "&crewId=" + crewId);
 		} else if (boardId != null) {
-			rd = articleService.writeArticle(loginedMemberId, title, body, String.valueOf(boardId));
+			rd = articleService.writeArticle(loginedMemberId, title, body, imageUrl, String.valueOf(boardId));
 			return Ut.jsReplace(rd.getResultCode(), rd.getMsg(),
 					"../article/detail?id=" + rd.getData1() + "&boardId=" + boardId);
 		}

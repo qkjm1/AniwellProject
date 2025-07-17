@@ -21,8 +21,8 @@ public class ArticleService {
 		this.articleRepository = articleRepository;
 	}
 
-	public ResultData writeArticle(int memberId, String title, String body, String boardId) {
-		articleRepository.writeArticle(memberId, title, body, boardId);
+	public ResultData writeArticle(int memberId, String title, String body, String imageUrl, String boardId) {
+		articleRepository.writeArticle(memberId, title, body, imageUrl, boardId);
 
 		int id = articleRepository.getLastInsertId();
 
@@ -168,8 +168,9 @@ public class ArticleService {
 		return articleRepository.findByCrewId(crewId);
 	}
 
-	public ResultData writeCrewArticle(Integer boardId, int crewId, int loginedMemberId, String title, String body) {
-		articleRepository.insertCrewArticle(boardId, crewId, loginedMemberId, title, body);
+	public ResultData writeCrewArticle(Integer boardId, int crewId, int loginedMemberId, String title, String body,
+			String imageUrl) {
+		articleRepository.insertCrewArticle(boardId, crewId, loginedMemberId, title, body, imageUrl);
 
 		int id = articleRepository.getLastInsertId();
 		return ResultData.from("S-1", "작성 완료", "id", id);
@@ -191,6 +192,5 @@ public class ArticleService {
 	public List<Article> getNoticeArticlesByBoardId(int boardId, int limit) {
 		return articleRepository.getNoticeArticlesByBoardId(boardId, limit);
 	}
-
 
 }
