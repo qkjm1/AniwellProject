@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RSW.vo.Rq;
 import com.example.RSW.vo.WalkCrew;
@@ -28,10 +29,13 @@ import com.example.RSW.service.MemberService;
 import com.example.RSW.service.WalkCrewMemberService;
 import com.example.RSW.service.WalkCrewService;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.ZoneId;
 import java.util.Date;
-
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -47,6 +51,9 @@ public class UsrCrewCafeController {
 
 	@Autowired
 	private WalkCrewMemberService walkCrewMemberService;
+
+	@Autowired
+	private Cloudinary cloudinary;
 
 	@GetMapping("")
 	public String showCafeMain(@RequestParam(required = false) Integer crewId, Model model) {
@@ -124,5 +131,17 @@ public class UsrCrewCafeController {
 		model.addAttribute("articles", articles);
 
 		return "redirect:/usr/crewCafe/cafeHome?crewId=" + myCrew.getId(); // ✅ 요거만 바꾸면 됨
+	}
+
+	@PostMapping("/uploadImage")
+	@ResponseBody
+	public ResultData uploadImage(@RequestParam("imageFile") MultipartFile imageFile) {
+		try {
+			Map uploadResult = cloudinary.uploader().upload(imageFile.getBytes(), ObjectUtils.emptyMap());
+			String imageUrl = (String) uploadResult.get("secure_url");
+			return ResultData.from("S-1", "업로드 성공", "imageUrl", imageUrl);
+		} catch (IOException e) {
+			return ResultData.from("F-1", "업로드 실패");
+		}
 	}
 }

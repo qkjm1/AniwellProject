@@ -15,7 +15,8 @@
 		#{boardId},
 		title =
 		#{title},
-		`body` = #{body}
+		`body` = #{body},
+		imageUrl = #{imageUrl}
 	</insert>
 
 	<delete id="deleteArticle" parameterType="int">
@@ -215,6 +216,7 @@
 		memberId = #{memberId},
 		title = #{title},
 		`body` = #{body},
+		imageUrl = #{imageUrl},
 		regDate = NOW(),
 		updateDate = NOW()
 	</insert>
@@ -242,7 +244,8 @@
 		SELECT *
 		FROM article
 		WHERE crewId = #{crewId}
-		AND boardId = #{boardId}
+		AND boardId =
+		#{boardId}
 		AND delStatus = 0
 		ORDER BY id DESC
 		LIMIT #{limit}

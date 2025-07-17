@@ -54,6 +54,18 @@
 			<textarea id="body" name="body" rows="10" required class="textarea textarea-bordered w-full" placeholder="내용을 입력하세요"></textarea>
 		</div>
 
+		<!-- 이미지 업로드 -->
+		<div>
+			<label for="imageFile" class="block font-semibold mb-1">이미지 업로드</label>
+			<input type="file" name="imageFile" id="imageFile" accept="image/*" />
+			<button type="button" onclick="uploadImage()" class="btn btn-sm btn-outline mt-2">이미지 업로드</button>
+			<input type="hidden" name="imageUrl" id="imageUrl" />
+			<div style="margin-top: 10px;">
+				<img id="preview" style="max-width: 300px; display: none;" />
+			</div>
+		</div>
+
+
 		<!-- 버튼 -->
 		<div class="flex gap-4">
 			<button type="submit" class="btn btn-primary">등록</button>
@@ -62,5 +74,41 @@
 
 	</form>
 </section>
+
+<!--이미지 업로드 하기  -->
+<script>
+function uploadImage() {
+  const imageFile = document.getElementById("imageFile").files[0];
+
+  if (!imageFile) {
+    alert("이미지 파일을 선택해주세요.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("imageFile", imageFile);
+
+  fetch("/usr/crewCafe/uploadImage", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.resultCode === "S-1") {
+        const imageUrl = data.imageUrl;
+        document.getElementById("imageUrl").value = imageUrl; // ✅ 서버에서 받은 imageUrl 세팅
+        document.getElementById("preview").src = imageUrl;
+        document.getElementById("preview").style.display = "block";
+        alert("이미지 업로드 성공!");
+      } else {
+        alert("이미지 업로드에 실패했습니다.");
+      }
+    })
+    .catch(error => {
+      console.error("업로드 오류:", error);
+      alert("이미지 업로드 중 오류가 발생했습니다.");
+    });
+}
+</script>
 
 <%@ include file="/WEB-INF/jsp/usr/common/foot.jspf"%>
