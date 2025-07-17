@@ -62,7 +62,7 @@ document.querySelectorAll('.menu-item').forEach((item) => {
 				url = `/usr/pet/list?memberId=${loginedMemberId}`
 				break
 			case 'crew':
-				url = `/crew`
+				url = `/usr/walkCrew/list`
 				break
 		}
 
