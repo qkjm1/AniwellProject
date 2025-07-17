@@ -1,0 +1,218 @@
+body {
+	background-color: #ffffff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+	font-family: 'Arial';
+}
+
+.form-wrapper {
+	width: 800px;
+	height: 70vh;
+	max-height: 90vh;
+	/* ✅ 높이 제한 */
+	background: white;
+	border-radius: 15px;
+	overflow: hidden;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* sign-in form	               -----------------------------*/
+
+.sign-in {
+	transition: transform 0.5s ease;
+	width: auto;
+	height: 100%;
+}
+
+.sign-in>.left-panel {
+	padding: 40px 30px;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.sign-in>.left-panel h1 {
+	margin-bottom: 30px;
+	font-size: 28px;
+}
+
+.sign-in>.left-panel input {
+	width: 100%;
+	margin-bottom: 15px;
+	padding: 8px;
+	border: none;
+	border-bottom: 1px solid #aaa;
+	outline: none;
+	background: transparent;
+}
+
+.sign-in-button {
+	margin-top: 10px;
+	background-color: #f5d76e;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+}
+
+.sign-in-button:hover {
+	background-color: #f7e08c;
+}
+
+.sign-in>.right-panel {
+	padding: 40px 30px;
+	background: linear-gradient(135deg, #c0d9c9, #f2eb99);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	color: #333;
+	text-align: center;
+}
+
+.sign-up-button {
+	background-color: #a8cbb5;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+}
+
+.sign-up-button:hover {
+	background-color: #b9e0c8;
+}
+
+/* .sign-up from                  -----------------------------------*/
+
+.sign-up {
+	transition: transform 0.5s ease;
+}
+
+.sign-up>.left-panel {
+	padding: 40px 30px;
+	background: linear-gradient(135deg, #f0eb94, #bdd1c6);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	color: #333;
+	text-align: center;
+}
+
+.sign-up>.left-panel button {
+	background-color: #f5d76e;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 10px;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.sign-up>.form-panel {
+	padding: 40px 30px;
+	background-color: white;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	/* ✅ 스크롤 생기도록 */
+}
+
+.sign-up>.form-step {
+	display: none;
+	flex-direction: column;
+	gap: 12px;
+	animation: fadeIn 0.3s ease-in;
+}
+
+.form-step.active {
+	display: flex;
+}
+
+input,
+select {
+	border: none;
+	border-bottom: 1px solid #aaa;
+	background: transparent;
+	padding: 8px;
+	outline: none;
+}
+
+button.next-button,
+button.prev-button,
+button.submit-button {
+	background-color: #a8cbb5;
+	border: none;
+	padding: 10px;
+	border-radius: 10px;
+	margin-top: 10px;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.logo-img {
+	width: 80px;
+	margin-top: 20px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.timeline {
+	margin-top: 20px;
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+}
+
+.paw-icon {
+	width: 24px;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.error-message {
+	color: red;
+	text-align: center;
+	font-size: 13px;
+	margin-bottom: 10px;
+}
+
+
+.sign-in {
+	transform: translateX(0%);
+	z-index: 2;
+}
+
+.sign-up {
+	transform: translateX(100%);
+	z-index: 1;
+}
+
+.form-wrapper.active .sign-in {
+	transform: translateX(-100%);
+}
+
+.form-wrapper.active .sign-up {
+	transform: translateX(0%);
+	z-index: 2;
+}

@@ -8,26 +8,16 @@
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<link rel="stylesheet" th:href="@{/resource/petPage.css}">
-	<link rel="stylesheet" th:href="@{/resource/common.css}">
-	<script th:src="@{/resource/calendar.js}"></script>
+	<link rel="stylesheet" th:href="@{/resource/css/common.css}">
+	<script th:src="@{/resource/js/calendar.js}"></script>
 
 
 </head>
 
 <body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans">
-	<div class="flex h-screen">
+	<div class="flex h-screen" >
 		<!-- Sidebar -->
-		<aside class="w-20 flex flex-col items-center p-4">
-			<img src="https://i.imgur.com/rcOcaL6.png" alt="Logo" class="w-12 mb-6">
-			<div class="flex-1 flex flex-col gap-4">
-				<div class="w-8 h-1 bg-black rounded"></div>
-				<div class="w-8 h-1 bg-black rounded"></div>
-			</div>
-			<div class="mt-auto">
-				<img src="https://i.imgur.com/OJI4yzC.png" alt="paw" class="w-8">
-			</div>
-		</aside>
-
+		<div th:replace="common :: siteHeader"></div>
 
 		<!-- Main content -->
 		<main class="main_page min-h-screen flex-1 p-6 grid grid-cols-12 gap-4">
