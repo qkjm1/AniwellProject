@@ -23,11 +23,36 @@
 				<img class="mx-auto" src="https://imgur.com/OJI4yzC.png" alt="dig_cat">
 			</div>
 			<div class="icon">
-				<button type="button" class="in-icon" onclick="location.href='/usr/member/login'">로그인
-					<img src="https://imgur.com/vTaaRnh.png" alt="d">
-				</button>
-				<div class="up-icon">
-					<img src="https://imgur.com/2ZJPrGR.png" alt="d">
+				<div>
+					<!-- 로그인 안 했을 때만 보이는 로그인 버튼 -->
+					<button type="button" class="in-icon" th:if="${!rq.isLogined}"
+						onclick="location.href='/usr/member/login'">
+						로그인
+						<img src="https://imgur.com/vTaaRnh.png" alt="d">
+					</button>
+
+					<!-- 로그인 했을 때만 보이는 로그아웃 버튼 -->
+					<button type="button" class="in-icon" th:if="${rq.isLogined}"
+						onclick="location.href='/usr/member/doLogout'">
+						로그아웃
+						<img src="https://imgur.com/vTaaRnh.png" alt="d">
+					</button>
+				</div>
+
+				<div type="button" class="up-icon">
+					<!-- 로그인 안 했을 때만 보이는 로그인 버튼 -->
+					<button type="button" class="in-icon" th:if="${!rq.isLogined}"
+						onclick="location.href='/usr/member/join'">
+						join
+						<img src="https://imgur.com/2ZJPrGR.png" alt="d">
+					</button>
+
+					<!-- 로그인 했을 때만 보이는 로그아웃 버튼 -->
+					<button type="button" class="in-icon" th:if="${rq.isLogined}"
+					        th:onclick="'location.href=\'/usr/pet/list?memberId=' + ${rq.loginedMemberId} + '\';'">
+						petlist
+						<img src="https://imgur.com/2ZJPrGR.png" alt="d">
+					</button>
 				</div>
 			</div>
 		</div>
