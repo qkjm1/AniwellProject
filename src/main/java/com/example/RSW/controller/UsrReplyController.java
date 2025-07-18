@@ -70,28 +70,25 @@ public class UsrReplyController {
     }
 
     // 댓글 삭제 처리
-    @RequestMapping("/usr/reply/doDelete")
-    @ResponseBody
-    public String doDelete(@RequestParam int id,
-                           @RequestParam String relTypeCode,
-                           @RequestParam int relId,
-                           @RequestParam int boardId) {
+	@RequestMapping("/usr/reply/doDelete")
+	@ResponseBody
+	public String doDelete(@RequestParam int id, @RequestParam String relTypeCode, @RequestParam int relId,
+			@RequestParam int boardId) {
 
-        Reply reply = replyService.getReply(id);
-        if (reply == null) {
-            return Ut.jsHistoryBack("F-1", "해당 댓글이 존재하지 않습니다.");
-        }
+		Reply reply = replyService.getReply(id);
+		if (reply == null) {
+			return Ut.jsHistoryBack("F-1", "해당 댓글이 존재하지 않습니다.");
+		}
 
-        // 삭제 권한 체크
-        ResultData actorCanDeleteRd = replyService.userCanDelete(rq.getLoginedMemberId(), reply);
-        if (actorCanDeleteRd.isFail()) {
-            return Ut.jsHistoryBack(actorCanDeleteRd.getResultCode(), actorCanDeleteRd.getMsg());
-        }
+		// 삭제 권한 체크
+		ResultData actorCanDeleteRd = replyService.userCanDelete(rq.getLoginedMemberId(), reply);
+		if (actorCanDeleteRd.isFail()) {
+			return Ut.jsHistoryBack(actorCanDeleteRd.getResultCode(), actorCanDeleteRd.getMsg());
+		}
 
-        replyService.deleteReply(id);
+		replyService.deleteReply(id);
 
-        // 삭제 후 게시글 상세 페이지로 리다이렉트
-        return Ut.jsReplace("S-1", "댓글을 삭제했습니다.",
-                "../article/detail?id=" + relId + "&boardId=" + boardId);
-    }
+		// 삭제 후 게시글 상세 페이지로 리다이렉트
+		return Ut.jsReplace("S-1", "댓글을 삭제했습니다.", "../article/detail?id=" + relId + "&boardId=" + boardId);
+	}
 }

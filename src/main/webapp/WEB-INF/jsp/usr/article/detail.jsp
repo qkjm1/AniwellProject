@@ -279,8 +279,9 @@ function doModifyReply(replyId) {
 				<a class="btn btn-ghost" href="../article/modify?id=${article.id}">수정</a>
 			</c:if>
 			<c:if test="${article.userCanDelete }">
-				<a class="btn btn-ghost" href="../article/doDelete?id=${article.id}">삭제</a>
+				<a class="btn btn-ghost" href="../article/doDelete?id=${article.id}&crewId=${param.crewId}">삭제</a>
 			</c:if>
+
 		</div>
 
 	</div>
@@ -375,8 +376,8 @@ function doModifyReply(replyId) {
 								<a class="btn btn-outline btn-xs btn-error" onclick="if(confirm('정말 삭제?') == false) return false;"
 									href="/usr/reply/doDelete?id=${reply.id}&relTypeCode=article&relId=${article.id}&boardId=${article.boardId}">
 									삭제 </a>
-
 							</c:if>
+
 						</td>
 					</tr>
 				</c:forEach>

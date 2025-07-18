@@ -188,7 +188,7 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doDelete")
 	@ResponseBody
-	public String doDelete(HttpServletRequest req, int id) {
+	public String doDelete(HttpServletRequest req, int id, @RequestParam int crewId) {
 		Rq rq = (Rq) req.getAttribute("rq");
 		Article article = articleService.getArticleById(id);
 
@@ -202,7 +202,8 @@ public class UsrArticleController {
 		}
 
 		articleService.deleteArticle(id);
-		return Ut.jsReplace(userCanDeleteRd.getResultCode(), userCanDeleteRd.getMsg(), "../article/list");
+
+		return Ut.jsReplace("S-1", "게시글이 삭제되었습니다.", "../crewCafe/cafeHome?crewId=" + crewId);
 	}
 
 	@RequestMapping("/usr/article/detail")
