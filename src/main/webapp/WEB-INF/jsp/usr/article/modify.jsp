@@ -32,9 +32,21 @@
 			<textarea id="body" name="body" rows="10" required class="textarea textarea-bordered w-full">${article.body}</textarea>
 		</div>
 
-		<!-- 이미지 업로드는 현재 doModify()에서 처리 안 하므로 생략 또는 향후 확장 -->
-		<!-- <div>... 생략 가능 ...</div> -->
 
+		<!-- ✅ 기존 이미지 미리보기 -->
+		<c:if test="${not empty article.imageUrl}">
+			<div>
+				<label class="block font-semibold mb-1">기존 이미지</label>
+				<img id="preview" src="${article.imageUrl}" alt="기존 업로드 이미지" style="max-width: 300px; border-radius: 8px;" />
+			</div>
+		</c:if>
+		<!-- ✅ 이미지 업로드 -->
+		<div>
+			<label for="imageFile" class="block font-semibold mb-1">새 이미지 업로드</label>
+			<input type="file" name="imageFile" id="imageFile" accept="image/*" onchange="previewImage(this)" />
+			<!-- 업로드 후 저장될 이미지 URL -->
+			<input type="hidden" name="imageUrl" id="imageUrl" value="${article.imageUrl}" />
+		</div>
 		<!-- 버튼 -->
 		<div class="flex gap-4">
 			<button type="submit" class="btn btn-primary">수정 완료</button>

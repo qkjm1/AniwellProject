@@ -271,6 +271,16 @@ function doModifyReply(replyId) {
 					<th style="text-align: center;">Body</th>
 					<td style="text-align: center;">${article.body }</td>
 				</tr>
+
+				<c:if test="${not empty article.imageUrl}">
+					<tr>
+						<th style="text-align: center;">Image</th>
+						<td style="text-align: center;">
+							<img src="${article.imageUrl}" alt="업로드 이미지" style="max-width: 500px; border-radius: 8px;" />
+						</td>
+					</tr>
+				</c:if>
+
 			</tbody>
 		</table>
 		<div class="btns">
