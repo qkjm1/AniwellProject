@@ -169,9 +169,14 @@ public class ArticleService {
 		return articleRepository.findByCrewId(crewId);
 	}
 
+<<<<<<< HEAD
 	public ResultData writeCrewArticle(Integer boardId, int crewId, int loginedMemberId, String title, String body,
 			String imageUrl) {
 		articleRepository.insertCrewArticle(boardId, crewId, loginedMemberId, title, body, imageUrl);
+=======
+	public ResultData writeCrewArticle(Integer boardId, int crewId, int loginedMemberId, String title, String body) {
+		articleRepository.insertCrewArticle(boardId, crewId, loginedMemberId, title, body);
+>>>>>>> 06fc6dd (구글 연동 끝)
 
 		int id = articleRepository.getLastInsertId();
 		return ResultData.from("S-1", "작성 완료", "id", id);
@@ -185,6 +190,7 @@ public class ArticleService {
 		return articleRepository.getRecentArticlesByCrewAndBoardId(crewId, boardId, limit);
 	}
 
+<<<<<<< HEAD
 	public List<Article> getArticlesByCrewIdAndBoardId(Integer crewId, Integer boardId) {
 		return articleRepository.getArticlesByCrewIdAndBoardId(crewId, boardId);
 	}
@@ -216,4 +222,6 @@ public class ArticleService {
 		return articleRepository.getSchedulesByCrewId(crewId);
 	}
 
+=======
+>>>>>>> 06fc6dd (구글 연동 끝)
 }

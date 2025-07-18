@@ -4,7 +4,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-#   username: 구글 계정
+    #   username: 구글 계정
     #password: 구글 계정 앱 비밀번호
     properties:
       mail:
@@ -12,6 +12,7 @@ spring:
           auth: true
           starttls:
             enable: true
+<<<<<<< HEAD
   thymeleaf:
    prefix: classpath:/templates/        # HTML 파일의 기본 경로
    suffix: .html                        # HTML 확장자
@@ -20,6 +21,19 @@ spring:
    content-type: text/html              # MIME 타입
    cache: false                         # 개발 중에는 false (템플릿 수정 시 자동 반영)
    check-template-location: true   
+=======
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+  oauth2:
+    google:
+      client-id: "노션에서 가져오기"
+      client-secret: "노션에서 가져오기"
+      redirect-uri: "http://localhost:8080/usr/member/google"
+
+>>>>>>> 06fc6dd (구글 연동 끝)
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://aniwell.crg6u0s2maw3.ap-northeast-2.rds.amazonaws.com:3306/aniwell?serverTimezone=Asia/Seoul
@@ -47,6 +61,6 @@ kakao:
   redirect-uri: "http://localhost:8080/usr/member/kakao"  #로그인 redirect URI
 
 cloudinary:
-    cloud_name: dfiqktimk
-    api_key: 145284189636895
-    api_secret: 4TS23PL5HMWPolljcIRqitpWwU0
+  cloud_name: dfiqktimk
+  api_key: 145284189636895
+  api_secret: 4TS23PL5HMWPolljcIRqitpWwU0

@@ -20,6 +20,7 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 	// NeedLoginInterceptor 불러오기(연결)
 	@Autowired
 	NeedLoginInterceptor needLoginInterceptor;
+<<<<<<< HEAD
 
 	// NeedLogoutInterceptor 불러오기(연결)
 	@Autowired
@@ -38,6 +39,15 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 
     // 인터셉터 등록(적용)
     public void addInterceptors(InterceptorRegistry registry) {
+=======
+
+	// NeedLogoutInterceptor 불러오기(연결)
+	@Autowired
+	NeedLogoutInterceptor needLogoutInterceptor;
+
+	// 인터셉터 등록(적용)
+	public void addInterceptors(InterceptorRegistry registry) {
+>>>>>>> 06fc6dd (구글 연동 끝)
 //		registry.addInterceptor(beforeActionInterceptor).addPathPatterns("/**").excludePathPatterns("/resource/**")
 //				.excludePathPatterns("/error");
 //
@@ -111,6 +121,7 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 
 		// ─ 크루 카페 진입
 		ir.addPathPatterns("/usr/walkCrewMember/myCrewCafe");
+<<<<<<< HEAD
 
 		// ─ 크루 모집 관리
 		ir.addPathPatterns("/usr/walkCrew/register");
@@ -137,7 +148,34 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 		ir.addPathPatterns("/usr/article/writeSchedule");
 		ir.addPathPatterns("/usr/article/list");
 		ir.addPathPatterns("/usr/article/detail");
+=======
+>>>>>>> 06fc6dd (구글 연동 끝)
 
+		// ─ 크루 모집 관리
+		ir.addPathPatterns("/usr/walkCrew/register");
+		ir.addPathPatterns("/usr/walkCrew/doRegister");
+		ir.addPathPatterns("/usr/walkCrew/modify");
+		ir.addPathPatterns("/usr/walkCrew/doModify");
+		ir.addPathPatterns("/usr/walkCrew/list");
+		ir.addPathPatterns("/usr/walkCrew/detail");
+
+		// ─ 크루 신청자 관리
+		ir.addPathPatterns("/usr/walkCrewMember/joinCrew");
+		ir.addPathPatterns("/usr/walkCrewMember/requestList");
+		ir.addPathPatterns("/usr/walkCrewMember/requestDetail");
+		ir.addPathPatterns("/usr/walkCrewMember/approve");
+		ir.addPathPatterns("/usr/walkCrewMember/reject");
+
+		// ─ 크루 카페 게시글 (공지/자유/사진첩/일정)
+		ir.addPathPatterns("/usr/article/write");
+		ir.addPathPatterns("/usr/article/doWrite");
+		ir.addPathPatterns("/usr/article/modify");
+		ir.addPathPatterns("/usr/article/doModify");
+		ir.addPathPatterns("/usr/article/delete");
+		ir.addPathPatterns("/usr/article/schedule");
+		ir.addPathPatterns("/usr/article/writeSchedule");
+		ir.addPathPatterns("/usr/article/list");
+		ir.addPathPatterns("/usr/article/detail");
 
 //		로그아웃 필요
 		ir = registry.addInterceptor(needLogoutInterceptor);

@@ -2,6 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 06fc6dd (구글 연동 끝)
 
 <html>
 <head>
@@ -47,12 +51,17 @@
 	position: relative;
 }
 
+<<<<<<< HEAD
 .section-title a.write-button, .section-title button.write-button {
+=======
+.section-title a.write-button {
+>>>>>>> 06fc6dd (구글 연동 끝)
 	position: absolute;
 	right: 0;
 	font-size: 0.85em;
 	text-decoration: none;
 	color: #007bff;
+<<<<<<< HEAD
 	background: none;
 	border: none;
 	cursor: pointer;
@@ -60,6 +69,11 @@
 
 .section-title a.write-button:hover, .section-title button.write-button:hover
 	{
+=======
+}
+
+.section-title a.write-button:hover {
+>>>>>>> 06fc6dd (구글 연동 끝)
 	text-decoration: underline;
 }
 
@@ -99,7 +113,11 @@ ul.article-preview img {
 			<a href="/usr/crewCafe/cafeHome?crewId=${crew.id}">🏠 홈</a>
 			<a href="/usr/article/list?crewId=${crew.id}&boardId=1">📢 공지사항</a>
 			<a href="/usr/article/list?crewId=${crew.id}&boardId=3">📝 자유게시판</a>
+<<<<<<< HEAD
 			<a href="javascript:void(0);" onclick="openGalleryModal()">📸 사진첩</a>
+=======
+			<a href="/usr/article/list?crewId=${crew.id}&boardId=4">📸 사진첩</a>
+>>>>>>> 06fc6dd (구글 연동 끝)
 			<a href="/usr/article/schedule?crewId=${crew.id}">📅 일정</a>
 			<c:if test="${crew != null and crew.leaderId == rq.loginedMemberId}">
 				<a href="/usr/walkCrewMember/requestList?crewId=${crew.id}">👥 크루 신청자 리스트</a>
@@ -113,10 +131,17 @@ ul.article-preview img {
 				<a class="write-button" href="/usr/article/write?crewId=${crew.id}&boardId=1">✏️ 공지 작성</a>
 			</div>
 			<ul class="article-preview">
+<<<<<<< HEAD
 				<c:forEach var="article" items="${noticeArticles}">
 					<li>
 						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title}
 							(${fn:substring(article.regDate, 0, 10)}) </a>
+=======
+				<c:forEach var="article" items="${noticeArticles}" begin="0" end="0">
+					<li>
+						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title} (
+							${fn:substring(article.regDate, 0, 10)} ) </a>
+>>>>>>> 06fc6dd (구글 연동 끝)
 					</li>
 				</c:forEach>
 				<c:if test="${empty noticeArticles}">
@@ -132,10 +157,17 @@ ul.article-preview img {
 				<a class="write-button" href="/usr/article/write?crewId=${crew.id}&boardId=3">✏️ 자유 글쓰기</a>
 			</div>
 			<ul class="article-preview">
+<<<<<<< HEAD
 				<c:forEach var="article" items="${freeArticles}">
 					<li>
 						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title}
 							(${fn:substring(article.regDate, 0, 10)}) </a>
+=======
+				<c:forEach var="article" items="${freeArticles}" begin="0" end="0">
+					<li>
+						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title} (
+							${fn:substring(article.regDate, 0, 10)} ) </a>
+>>>>>>> 06fc6dd (구글 연동 끝)
 					</li>
 				</c:forEach>
 				<c:if test="${empty freeArticles}">
@@ -148,8 +180,42 @@ ul.article-preview img {
 		<div class="content-box">
 			<div class="section-title">
 				📸 최근 사진
+<<<<<<< HEAD
 				<button onclick="openGalleryModal()" class="write-button" type="button">🖼 사진 더보기</button>
 			</div>
+=======
+				<a class="write-button" href="/usr/article/write?crewId=${crew.id}&boardId=4">📤 사진 업로드</a>
+			</div>
+			<ul class="article-preview">
+				<c:forEach var="article" items="${galleryArticles}" begin="0" end="0">
+					<li>
+						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}">
+							<c:if test="${not empty article.imageUrl}">
+								<img src="${article.imageUrl}" alt="사진" />
+							</c:if>
+							${article.title} (
+							<fmt:formatDate value="${article.regDate}" pattern="yyyy-MM-dd" />
+							)
+						</a>
+					</li>
+				</c:forEach>
+				<c:if test="${empty galleryArticles}">
+					<li>사진이 없습니다.</li>
+				</c:if>
+			</ul>
+		</div>
+
+		<!-- ✅ 일정 등록 섹션 -->
+		<div class="content-box calendar-box">
+			<div class="section-title">
+				📅 일정 등록
+				<a class="write-button" href="/usr/article/writeSchedule?crewId=${crew.id}">➕ 일정 추가</a>
+			</div>
+			<p>달력을 클릭해서 일정을 등록하세요.</p>
+			<div id="calendar" style="height: 300px; border: 1px solid #aaa; background: #fff;"></div>
+		</div>
+	</div>
+>>>>>>> 06fc6dd (구글 연동 끝)
 
 			<ul class="article-preview" style="display: flex; flex-wrap: wrap; gap: 16px; list-style: none; padding: 0;">
 				<c:forEach var="article" items="${galleryArticles}">
