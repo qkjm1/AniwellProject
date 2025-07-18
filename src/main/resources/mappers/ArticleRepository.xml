@@ -278,6 +278,69 @@
 		LIMIT #{limit}
 	</select>
 
+	<!-- 일정을 등록하기 -->
+	<insert id="writeSchedule">
+		INSERT INTO article
+		SET
+		boardId = 5,
+		crewId = #{crewId},
+		memberId = #{loginedMemberId},
+		title = #{scheduleTitle},
+		body = '',
+		regDate = NOW(),
+		updateDate = NOW(),
+		scheduleDate = #{scheduleDate}
+	</insert>
+
+
+	<!-- ✅ 관리자 전용 공지사항 게시글 개수 조회 -->
+	<!-- boardId = 1인 전체 공지사항 게시판에서 authLevel = 7(관리자)이 작성한 게시글만 카운트 -->
+
+	<!-- ✅ 관리자 공지 개수 -->
+	<select id="getAdminOnlyArticleCount" resultType="int">
+		SELECT COUNT(*)
+		FROM article
+		WHERE boardId = #{boardId}
+		AND delStatus = 0
+		AND memberId IN (
+		SELECT id FROM member WHERE authLevel = 7
+		)
+		<if test="searchKeyword != ''">
+			<choose>
+				<when test="searchKeywordTypeCode == 'title'">
+					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchKeywordTypeCode == 'body'">
+					AND body LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<!-- ✅ 관리자 공지 목록 -->
+	<select id="getAdminOnlyArticles" resultType="Article">
+		SELECT *
+		FROM article
+		WHERE boardId = #{boardId}
+		AND delStatus = 0
+		AND
+		memberId IN (
+		SELECT id FROM member WHERE authLevel = 7
+		)
+		<if test="searchKeyword != ''">
+			<choose>
+				<when test="searchKeywordTypeCode == 'title'">
+					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+				<when test="searchKeywordTypeCode == 'body'">
+					AND body LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</if>
+		ORDER BY id DESC
+		LIMIT #{limitStart}, #{itemsInAPage}
+	</select>
+
 
 
 </mapper>

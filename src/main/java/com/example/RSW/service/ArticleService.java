@@ -193,4 +193,20 @@ public class ArticleService {
 		return articleRepository.getNoticeArticlesByBoardId(boardId, limit);
 	}
 
+	// 일정등록하기
+	public void writeSchedule(int crewId, int loginedMemberId, String scheduleDate, String scheduleTitle) {
+		articleRepository.writeSchedule(crewId, loginedMemberId, scheduleDate, scheduleTitle);
+	}
+
+	
+	// 공지사항 구분하기 (일반 공지사항 / 크루까페 공지사항)
+	public int getAdminOnlyArticleCount(Integer boardId, String searchKeywordTypeCode, String searchKeyword) {
+		return articleRepository.getAdminOnlyArticleCount(boardId, searchKeywordTypeCode, searchKeyword);
+	}
+
+	public List<Article> getAdminOnlyArticles(Integer boardId, int limitStart, int itemsInAPage,
+			String searchKeywordTypeCode, String searchKeyword) {
+		return articleRepository.getAdminOnlyArticles(boardId, limitStart, itemsInAPage, searchKeywordTypeCode, searchKeyword);
+	}
+
 }

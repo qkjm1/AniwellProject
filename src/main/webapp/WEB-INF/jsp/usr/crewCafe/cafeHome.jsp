@@ -3,7 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-
 <html>
 <head>
 <title>${crew.title}-크루전용카페</title>
@@ -48,15 +47,19 @@
 	position: relative;
 }
 
-.section-title a.write-button {
+.section-title a.write-button, .section-title button.write-button {
 	position: absolute;
 	right: 0;
 	font-size: 0.85em;
 	text-decoration: none;
 	color: #007bff;
+	background: none;
+	border: none;
+	cursor: pointer;
 }
 
-.section-title a.write-button:hover {
+.section-title a.write-button:hover, .section-title button.write-button:hover
+	{
 	text-decoration: underline;
 }
 
@@ -96,7 +99,7 @@ ul.article-preview img {
 			<a href="/usr/crewCafe/cafeHome?crewId=${crew.id}">🏠 홈</a>
 			<a href="/usr/article/list?crewId=${crew.id}&boardId=1">📢 공지사항</a>
 			<a href="/usr/article/list?crewId=${crew.id}&boardId=3">📝 자유게시판</a>
-			<a href="/usr/article/list?crewId=${crew.id}&boardId=4">📸 사진첩</a>
+			<a href="javascript:void(0);" onclick="openGalleryModal()">📸 사진첩</a>
 			<a href="/usr/article/schedule?crewId=${crew.id}">📅 일정</a>
 			<c:if test="${crew != null and crew.leaderId == rq.loginedMemberId}">
 				<a href="/usr/walkCrewMember/requestList?crewId=${crew.id}">👥 크루 신청자 리스트</a>
@@ -112,8 +115,8 @@ ul.article-preview img {
 			<ul class="article-preview">
 				<c:forEach var="article" items="${noticeArticles}">
 					<li>
-						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title} (
-							${fn:substring(article.regDate, 0, 10)} ) </a>
+						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title}
+							(${fn:substring(article.regDate, 0, 10)}) </a>
 					</li>
 				</c:forEach>
 				<c:if test="${empty noticeArticles}">
@@ -131,8 +134,8 @@ ul.article-preview img {
 			<ul class="article-preview">
 				<c:forEach var="article" items="${freeArticles}">
 					<li>
-						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title} (
-							${fn:substring(article.regDate, 0, 10)} ) </a>
+						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title}
+							(${fn:substring(article.regDate, 0, 10)}) </a>
 					</li>
 				</c:forEach>
 				<c:if test="${empty freeArticles}">
@@ -145,37 +148,108 @@ ul.article-preview img {
 		<div class="content-box">
 			<div class="section-title">
 				📸 최근 사진
-				<a class="write-button" href="/usr/article/write?crewId=${crew.id}&boardId=4">📤 사진 업로드</a>
+				<button onclick="openGalleryModal()" class="write-button" type="button">🖼 사진 더보기</button>
 			</div>
-			<ul class="article-preview">
+
+			<ul class="article-preview" style="display: flex; flex-wrap: wrap; gap: 16px; list-style: none; padding: 0;">
 				<c:forEach var="article" items="${galleryArticles}">
-					<li>
-						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}">
-							<c:if test="${not empty article.imageUrl}">
-								<img src="${article.imageUrl}" alt="사진" />
-							</c:if>
-							${article.title} (
-							<fmt:formatDate value="${article.regDate}" pattern="yyyy-MM-dd" />
-							)
-						</a>
-					</li>
+					<c:if test="${not empty article.imageUrl and article.imageUrl ne 'undefined'}">
+						<li style="flex: 0 0 auto; width: 180px; text-align: center;">
+							<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}" style="text-decoration: none; color: black;">
+								<img src="${article.imageUrl}" alt="사진"
+									style="width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;" />
+								<div style="font-weight: bold;">${article.title}</div>
+								${fn:substring(article.regDate, 0, 10)}
+							</a>
+						</li>
+					</c:if>
 				</c:forEach>
+
 				<c:if test="${empty galleryArticles}">
 					<li>사진이 없습니다.</li>
 				</c:if>
 			</ul>
 		</div>
 
+		<!-- ✅ 사진 팝업 모달 -->
+		<div id="galleryModal"
+			style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; overflow-y: auto;">
+			<div
+				style="max-width: 960px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; position: relative;">
+				<h2>📷 업로드된 사진</h2>
+				<button onclick="closeGalleryModal()" style="position: absolute; top: 10px; right: 10px;">❌</button>
+
+				<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+					<c:forEach var="article" items="${galleryArticles}">
+						<c:if test="${not empty article.imageUrl and article.imageUrl ne 'undefined'}">
+							<img src="${article.imageUrl}" alt="팝업 이미지" style="width: 200px; height: auto; border-radius: 8px;" />
+						</c:if>
+					</c:forEach>
+				</div>
+			</div>
+		</div>
+
 		<!-- ✅ 일정 등록 섹션 -->
 		<div class="content-box calendar-box">
 			<div class="section-title">
-				📅 일정 등록
-				<a class="write-button" href="/usr/article/writeSchedule?crewId=${crew.id}">➕ 일정 추가</a>
+				📅 등록된 일정
+				<button onclick="openScheduleModal()" class="write-button" type="button">➕ 일정 추가</button>
 			</div>
-			<p>달력을 클릭해서 일정을 등록하세요.</p>
-			<div id="calendar" style="height: 300px; border: 1px solid #aaa; background: #fff;"></div>
+
+			<!-- ✅ 일정 목록 출력 -->
+			<ul class="article-preview">
+				<c:forEach var="schedule" items="${scheduleArticles}">
+					<li>📅 ${schedule.scheduleDate} - ${schedule.title}</li>
+				</c:forEach>
+				<c:if test="${empty scheduleArticles}">
+					<li>등록된 일정이 없습니다.</li>
+				</c:if>
+			</ul>
+		</div>
+
+		<!-- ✅ 일정 등록 모달 -->
+		<div id="scheduleModal"
+			style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+			<div
+				style="background: #fff; padding: 20px; border-radius: 10px; width: 400px; position: relative; margin: 100px auto;">
+				<h3>📅 일정 등록</h3>
+				<form action="/usr/article/doWriteSchedule" method="post">
+					<input type="hidden" name="crewId" value="${crew.id}" />
+
+					<div style="margin-bottom: 10px;">
+						<label for="scheduleDate">날짜 선택:</label>
+						<input type="date" id="scheduleDate" name="scheduleDate" required />
+					</div>
+
+					<div style="margin-bottom: 10px;">
+						<label for="scheduleTitle">일정 내용:</label>
+						<input type="text" id="scheduleTitle" name="scheduleTitle" required style="width: 100%;" />
+					</div>
+
+					<div style="text-align: right;">
+						<button type="submit">등록</button>
+						<button type="button" onclick="closeScheduleModal()">취소</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
+
+	<!-- ✅ 모달 JS -->
+	<script>
+		function openGalleryModal() {
+			document.getElementById("galleryModal").style.display = "block";
+		}
+		function closeGalleryModal() {
+			document.getElementById("galleryModal").style.display = "none";
+		}
+		function openScheduleModal() {
+			document.getElementById("scheduleModal").style.display = "flex";
+		}
+		function closeScheduleModal() {
+			document.getElementById("scheduleModal").style.display = "none";
+		}
+	</script>
 
 </body>
 </html>

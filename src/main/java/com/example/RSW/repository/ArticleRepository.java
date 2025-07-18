@@ -61,7 +61,16 @@ public interface ArticleRepository {
 
 	public List<Article> getArticlesByCrewIdAndBoardId(Integer crewId, Integer boardId);
 
-	// 메인홈 / 까페 공지사항 구분하기
+	// 메인홈 / 까페 공지사항 관련
 	List<Article> getNoticeArticlesByBoardId(@Param("boardId") int boardId, @Param("limit") int limit);
+
+	public int getAdminOnlyArticleCount(Integer boardId, String searchKeywordTypeCode, String searchKeyword);
+
+	public List<Article> getAdminOnlyArticles(Integer boardId, int limitStart, int itemsInAPage,
+			String searchKeywordTypeCode, String searchKeyword);;
+
+	// 일정등록하기
+	public void writeSchedule(@Param("crewId") int crewId, @Param("loginedMemberId") int loginedMemberId,
+			@Param("scheduleDate") String scheduleDate, @Param("scheduleTitle") String scheduleTitle);
 
 }
