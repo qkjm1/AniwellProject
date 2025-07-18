@@ -173,14 +173,28 @@
 		</dependency>
 
 		<dependency>
-		<groupId>com.cloudinary</groupId>
-		<artifactId>cloudinary-http44</artifactId>
-		<version>1.36.0</version>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http44</artifactId>
+			<version>1.36.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<!--위는타임리프 아래는 webflux -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+
+		<!--webflux 맥에서 사용할 수 있게끔하는 의존성-->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-resolver-dns-native-macos</artifactId>
+			<version>4.1.109.Final</version>
+			<classifier>osx-aarch_64</classifier> <!-- 또는 osx-x86_64 -->
 		</dependency>
 
 

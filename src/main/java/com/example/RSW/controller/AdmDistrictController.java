@@ -16,6 +16,8 @@ public class AdmDistrictController {
 		this.districtService = districtService;
 	}
 
+	
+	//싹다 저장
 	// CSV 경로 입력해서 등록 (ex:
 	// http://localhost:8080/adm/district/insert?path=C:/data/districts.csv)
 	@GetMapping("/insert")

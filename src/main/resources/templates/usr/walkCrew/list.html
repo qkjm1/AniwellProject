@@ -9,18 +9,89 @@
 	<title>크루 모집 목록</title>
 </head>
 
-<body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans">
+<body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans ">
 	<div class="flex h-screen">
 		<!-- Sidebar -->
 		<div th:replace="common :: siteHeader"></div>
 
 		<!-- Main content -->
 		<main class="main_page min-h-screen flex-1 p-3">
-			<div class="h-full w-full">
-				<iframe src="http://localhost:3001/crew/walkCrew" width="100%" height="100%" frameborder="0"></iframe>
-			</div>
+			<div class="h-full w-full overflow-hidden">
+				<div class="p-3 flex justify-around text-gray-800 grid grid-cols-12">
+					<div class="col-span-3 p-3">
+						<div id="crewAside">
+						</div>
+					</div>
+					<div class="p-2 col-span-9 w-full flex flex-col mx-auto">
+						<iframe id="walkCrew" src="http://localhost:3001/crew/walkCrew" width="100%" height="100%"
+							frameborder="0"></iframe>
+					</div>
+				</div>
 		</main>
 	</div>
+
+	<script type="text/javascript"
+		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=dfd275f49b78960a0458d6f6294cbde2&libraries=services"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		navigator.geolocation.getCurrentPosition(async (position) => {
+			const {latitude, longitude} = position.coords;
+			const geocoder = new kakao.maps.services.Geocoder();
+
+			geocoder.coord2RegionCode(longitude, latitude, (result, status) => {
+				if (status === kakao.maps.services.Status.OK) {
+					const city = result[0].region_1depth_name;
+					const district = result[0].region_2depth_name;
+
+
+					console.log("📍 시:", city, "구:", district);
+					// 🔸 동 리스트 요청
+					$.ajax({
+						type: "GET",
+						url: `/usr/walkCrew/getDongs`,
+						data: {city, district},
+						success: function (response) {
+							console.log("✅ 동 리스트:", response);
+
+							// 🔸 동 배열을 localStorage에 저장 (JSON.stringify)
+							localStorage.setItem("userCity", city);
+							localStorage.setItem("userDistrict", district);
+							localStorage.setItem("userDongs", JSON.stringify(response)); // 배열 저장
+
+							// 🔻 동적 HTML 생성
+							const asideHTML = `
+							  <aside class="bg-white p-6 shadow mx-auto h-[90%]]>
+							    <h2 class="text-lg font-semibold mb-4">${city || '로딩중'}</h2>
+								<div class="text-xl font-semibold mb-4 border-b border-gray-300 pb-2">
+								  ${district || '로딩중'}
+								</div>
+							    <ul class="grid grid-cols-2 gap-2 text-sm text-gray-700">
+							      ${response.map((dong) => `
+							        <li>
+							          <button
+							            class="w-full px-1 py-2 text-left bg-gray-100 hover:bg-yellow-200 rounded-lg transition duration-200 ease-in-out shadow-sm hover:shadow-md"
+							         
+							          >
+							            ${dong}
+							          </button>
+							        </li>
+							      `).join('')}
+							    </ul>
+							  </aside>
+							`;
+
+							// 🔻 #crewAside 내부에 렌더링
+							$('#crewAside').html(asideHTML);
+						},
+						error: function (err) {
+							console.error("❌ 동 목록 요청 실패:", err);
+						}
+					});
+				}
+			});
+		});
+	</script>
+
 </body>
 
 </html>
