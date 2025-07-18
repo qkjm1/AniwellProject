@@ -1,6 +1,7 @@
 package com.example.RSW.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -194,11 +195,11 @@ public class ArticleService {
 	}
 
 	// 일정등록하기
-	public void writeSchedule(int crewId, int loginedMemberId, String scheduleDate, String scheduleTitle) {
-		articleRepository.writeSchedule(crewId, loginedMemberId, scheduleDate, scheduleTitle);
+	public void writeSchedule(int crewId, int loginedMemberId, String scheduleDate, String scheduleTitle,
+			String scheduleBody) {
+		articleRepository.writeSchedule(crewId, loginedMemberId, scheduleDate, scheduleTitle, scheduleBody);
 	}
 
-	
 	// 공지사항 구분하기 (일반 공지사항 / 크루까페 공지사항)
 	public int getAdminOnlyArticleCount(Integer boardId, String searchKeywordTypeCode, String searchKeyword) {
 		return articleRepository.getAdminOnlyArticleCount(boardId, searchKeywordTypeCode, searchKeyword);
@@ -206,7 +207,13 @@ public class ArticleService {
 
 	public List<Article> getAdminOnlyArticles(Integer boardId, int limitStart, int itemsInAPage,
 			String searchKeywordTypeCode, String searchKeyword) {
-		return articleRepository.getAdminOnlyArticles(boardId, limitStart, itemsInAPage, searchKeywordTypeCode, searchKeyword);
+		return articleRepository.getAdminOnlyArticles(boardId, limitStart, itemsInAPage, searchKeywordTypeCode,
+				searchKeyword);
+	}
+
+	// 모임일정리스트불러오기
+	public List<Map<String, Object>> getSchedulesByCrewId(int crewId) {
+		return articleRepository.getSchedulesByCrewId(crewId);
 	}
 
 }

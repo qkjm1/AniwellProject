@@ -323,18 +323,27 @@ public class UsrArticleController {
 		return ResultData.newData(increaseHitCountRd, "hitCount", articleService.getArticleHitCount(id));
 	}
 
-	// 일정등록하기
+	// 모임일정등록
 	@PostMapping("/usr/article/doWriteSchedule")
 	public String doWriteSchedule(@RequestParam int crewId, @RequestParam String scheduleDate,
-			@RequestParam String scheduleTitle, HttpServletRequest req) {
+			@RequestParam String scheduleTitle, @RequestParam(required = false) String scheduleBody,
+			HttpServletRequest req) {
 
 		Rq rq = (Rq) req.getAttribute("rq");
 		int loginedMemberId = rq.getLoginedMemberId();
 
 		// 저장 로직 (예시)
-		articleService.writeSchedule(crewId, loginedMemberId, scheduleDate, scheduleTitle);
+		articleService.writeSchedule(crewId, loginedMemberId, scheduleDate, scheduleTitle, scheduleBody);
 
 		return "redirect:/usr/crewCafe/cafeHome?crewId=" + crewId;
+	}
+
+	// 모임일정 리스트
+	@RequestMapping("/usr/article/schedule")
+	public String showSchedule(@RequestParam int crewId, Model model) {
+		List<Map<String, Object>> scheduleList = articleService.getSchedulesByCrewId(crewId);
+		model.addAttribute("scheduleList", scheduleList);
+		return "usr/article/schedule";
 	}
 
 }

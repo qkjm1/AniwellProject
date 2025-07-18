@@ -189,6 +189,7 @@ ul.article-preview img {
 			</div>
 		</div>
 
+
 		<!-- ✅ 일정 등록 섹션 -->
 		<div class="content-box calendar-box">
 			<div class="section-title">
@@ -196,10 +197,16 @@ ul.article-preview img {
 				<button onclick="openScheduleModal()" class="write-button" type="button">➕ 일정 추가</button>
 			</div>
 
-			<!-- ✅ 일정 목록 출력 -->
+			<!-- ✅ 일정 목록 출력 (팝업 열기 포함) -->
 			<ul class="article-preview">
 				<c:forEach var="schedule" items="${scheduleArticles}">
-					<li>📅 ${schedule.scheduleDate} - ${schedule.title}</li>
+					<li>
+						<a href="javascript:void(0);"
+							onclick="openScheduleDetail('${schedule.scheduleDate}', '${fn:escapeXml(schedule.title)}', '${fn:escapeXml(schedule.body)}')">
+							📅 ${schedule.scheduleDate} -
+							<strong>${schedule.title}</strong>
+						</a>
+					</li>
 				</c:forEach>
 				<c:if test="${empty scheduleArticles}">
 					<li>등록된 일정이 없습니다.</li>
@@ -225,7 +232,10 @@ ul.article-preview img {
 						<label for="scheduleTitle">일정 내용:</label>
 						<input type="text" id="scheduleTitle" name="scheduleTitle" required style="width: 100%;" />
 					</div>
-
+					<div style="margin-bottom: 10px;">
+						<label for="scheduleBody">일정 설명:</label>
+						<textarea id="scheduleBody" name="scheduleBody" rows="3" style="width: 100%;" placeholder="일정 상세 내용을 입력하세요"></textarea>
+					</div>
 					<div style="text-align: right;">
 						<button type="submit">등록</button>
 						<button type="button" onclick="closeScheduleModal()">취소</button>
@@ -233,23 +243,54 @@ ul.article-preview img {
 				</form>
 			</div>
 		</div>
-	</div>
 
-	<!-- ✅ 모달 JS -->
-	<script>
-		function openGalleryModal() {
-			document.getElementById("galleryModal").style.display = "block";
-		}
-		function closeGalleryModal() {
-			document.getElementById("galleryModal").style.display = "none";
-		}
-		function openScheduleModal() {
-			document.getElementById("scheduleModal").style.display = "flex";
-		}
-		function closeScheduleModal() {
-			document.getElementById("scheduleModal").style.display = "none";
-		}
-	</script>
+		<!-- ✅ 일정 상세 보기 모달 -->
+		<div id="scheduleDetailModal"
+			style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+			<div
+				style="background: #fff; padding: 20px; border-radius: 10px; width: 400px; position: relative; margin: 100px auto;">
+				<h3 id="detailScheduleTitle">📅 일정 제목</h3>
+				<p>
+					<strong>날짜:</strong>
+					<span id="detailScheduleDate"></span>
+				</p>
+				<p>
+					<strong>내용:</strong>
+				</p>
+				<p id="detailScheduleBody" style="white-space: pre-wrap;"></p>
+				<div style="text-align: right;">
+					<button type="button" onclick="closeScheduleDetailModal()">닫기</button>
+				</div>
+			</div>
+		</div>
 
+		<!-- ✅ JS 추가 -->
+		<script>
+			function openGalleryModal() {
+				document.getElementById("galleryModal").style.display = "block";
+			}
+			function closeGalleryModal() {
+				document.getElementById("galleryModal").style.display = "none";
+			}
+			function openScheduleModal() {
+				document.getElementById("scheduleModal").style.display = "flex";
+			}
+			function closeScheduleModal() {
+				document.getElementById("scheduleModal").style.display = "none";
+			}
+
+			// ✅ 일정 상세 팝업 열기
+			function openScheduleDetail(date, title, body) {
+				document.getElementById("detailScheduleDate").innerText = date;
+				document.getElementById("detailScheduleTitle").innerText = "📅 "
+						+ title;
+				document.getElementById("detailScheduleBody").innerText = body;
+				document.getElementById("scheduleDetailModal").style.display = "flex";
+			}
+
+			function closeScheduleDetailModal() {
+				document.getElementById("scheduleDetailModal").style.display = "none";
+			}
+		</script>
 </body>
 </html>

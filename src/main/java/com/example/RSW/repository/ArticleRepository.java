@@ -1,6 +1,7 @@
 package com.example.RSW.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -71,6 +72,9 @@ public interface ArticleRepository {
 
 	// 일정등록하기
 	public void writeSchedule(@Param("crewId") int crewId, @Param("loginedMemberId") int loginedMemberId,
-			@Param("scheduleDate") String scheduleDate, @Param("scheduleTitle") String scheduleTitle);
+			@Param("scheduleDate") String scheduleDate, @Param("scheduleTitle") String scheduleTitle,
+			String scheduleBody);
+
+	public List<Map<String, Object>> getSchedulesByCrewId(int crewId);
 
 }

@@ -254,12 +254,15 @@
 
 	<!-- ✅ 특정 크루 ID와 게시판 ID에 해당하는 게시글 목록 조회 -->
 	<select id="getArticlesByCrewIdAndBoardId" resultType="Article">
-		SELECT A.*,
+		SELECT
+		A.*,
 		M.nickname AS extra__writer
 		FROM article AS A
-		INNER JOIN member AS M ON A.memberId = M.id
+		INNER JOIN member AS M
+		ON A.memberId = M.id
 		WHERE A.crewId = #{crewId}
-		AND A.boardId = #{boardId}
+		AND A.boardId =
+		#{boardId}
 		AND A.delStatus = 0
 		ORDER BY A.id DESC
 	</select>
@@ -288,11 +291,24 @@
 		crewId = #{crewId},
 		memberId = #{loginedMemberId},
 		title = #{scheduleTitle},
-		body = '',
+		body = #{scheduleBody},
 		regDate = NOW(),
 		updateDate = NOW(),
 		scheduleDate = #{scheduleDate}
 	</insert>
+
+
+	<!-- 일정 리스트 불러오기 -->
+	<select id="getSchedulesByCrewId" resultType="map">
+		SELECT
+		A.scheduleDate, A.title, A.body
+		FROM article AS A
+		WHERE A.crewId =
+		#{crewId}
+		AND A.scheduleDate IS NOT NULL
+		ORDER BY A.scheduleDate DESC
+	</select>
+
 
 
 	<!-- ✅ 관리자 전용 공지사항 게시글 개수 조회 -->
