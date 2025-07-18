@@ -25,13 +25,13 @@
 					<input type="hidden" name="boardId" value="${param.boardId}" />
 				</c:if>
 				<div class="flex">
-					<select class="select select-sm select-bordered max-w-xs" name="searchKeywordTypeCode"
-						data-value="${param.searchKeywordTypeCode}">
-						<option value="title">title</option>
-						<option value="body">body</option>
-						<option value="title,body">title+body</option>
-						<option value="nickname">nickname</option>
+					<select class="select select-sm select-bordered max-w-xs" name="searchKeywordTypeCode">
+						<option value="title" ${param.searchKeywordTypeCode == 'title' ? 'selected' : ''}>title</option>
+						<option value="body" ${param.searchKeywordTypeCode == 'body' ? 'selected' : ''}>body</option>
+						<option value="title,body" ${param.searchKeywordTypeCode == 'title,body' ? 'selected' : ''}>title+body</option>
+						<option value="nickname" ${param.searchKeywordTypeCode == 'nickname' ? 'selected' : ''}>nickname</option>
 					</select>
+
 					<label class="ml-3 input input-bordered input-sm flex items-center gap-2">
 						<input type="text" placeholder="Search" name="searchKeyword" value="${param.searchKeyword}" />
 						<button type="submit">

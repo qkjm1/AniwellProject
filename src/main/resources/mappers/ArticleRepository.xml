@@ -77,12 +77,13 @@
 		WHERE id = #{id}
 	</select>
 
-	<select id="getArticleCount" parameterType="int">
-		SELECT COUNT(*) , M.nickname AS extra__writer
+	<select id="getArticleCount" parameterType="map">
+		SELECT COUNT(*)
 		FROM article AS A
 		INNER
 		JOIN `member` AS M
-		ON A.memberId = M.id
+		ON A.memberId =
+		M.id
 		WHERE 1
 		<if test="boardId != 0">
 			AND A.boardId = #{boardId}
@@ -227,14 +228,13 @@
 
 	<select id="findByCrewId"
 		resultType="com.example.RSW.vo.Article">
-		SELECT *
-		FROM article
-		WHERE crewId = #{crewId}
-		AND delStatus =
-		0
-		ORDER BY regDate DESC
+		SELECT A.*, M.nickname AS extra__writer
+		FROM article AS A
+		INNER JOIN member AS M ON A.memberId = M.id
+		WHERE A.crewId = #{crewId}
+		AND A.delStatus = 0
+		ORDER BY A.regDate DESC
 	</select>
-
 	<!-- ✅ 크루 카페 홈에서 게시판별 최근 글 목록을 불러오는 쿼리 - crewId: 해당 크루의 ID - boardId: 게시판 
 		ID (예: 공지사항, 자유게시판 등) - delStatus = 0: 삭제되지 않은 글만 조회 - 최신 글 5개만 제한 (LIMIT 
 		#{limit}) -->
@@ -254,14 +254,16 @@
 
 	<!-- ✅ 특정 크루 ID와 게시판 ID에 해당하는 게시글 목록 조회 -->
 	<select id="getArticlesByCrewIdAndBoardId" resultType="Article">
-		SELECT *
-		FROM article
-		WHERE crewId = #{crewId}
-		AND boardId = #{boardId}
-		AND
-		delStatus = 0
-		ORDER BY id DESC
+		SELECT A.*,
+		M.nickname AS extra__writer
+		FROM article AS A
+		INNER JOIN member AS M ON A.memberId = M.id
+		WHERE A.crewId = #{crewId}
+		AND A.boardId = #{boardId}
+		AND A.delStatus = 0
+		ORDER BY A.id DESC
 	</select>
+
 
 	<!-- ✅ 일반 공지사항 전용 쿼리 (crewId가 NULL인 게시글만) -->
 	<select id="getNoticeArticlesByBoardId" resultType="Article">
