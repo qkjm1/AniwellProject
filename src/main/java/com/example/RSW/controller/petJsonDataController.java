@@ -113,6 +113,8 @@ public class petJsonDataController {
 
         return ResponseEntity.ok(result);
     }
+    
+    
 
     // 펫 등록하기
     @PostMapping(value = "/api/pet/join", consumes = "multipart/form-data")

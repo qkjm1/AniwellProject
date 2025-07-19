@@ -5,6 +5,7 @@ import com.example.RSW.interceptor.NeedLoginInterceptor;
 import com.example.RSW.interceptor.NeedLogoutInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -144,4 +145,12 @@ public class WebMvcConfigurer implements org.springframework.web.servlet.config.
 		registry.addResourceHandler("/uploads/**") // 웹에서 요청할 경로
 				.addResourceLocations("file:/Users/e-suul/Desktop/aniwell_uploads/"); // 실제 로컬 폴더
 	}
+	
+	@Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")  // 모든 경로에 대해
+                .allowedOrigins("http://localhost:3001") // 프론트 주소 허용
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true); // 세션/쿠키 허용
+    }
 }

@@ -3,362 +3,196 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.RSW.repository.ArticleRepository">
+<mapper namespace="com.example.RSW.repository.MemberRepository">
 
-	<insert id="writeArticle" parameterType="map">
-		INSERT INTO article
-		SET
-		regDate = NOW(),
+
+    <insert id="doJoin" parameterType="map">
+        INSERT INTO `member`
+        SET regDate = NOW(),
 		updateDate = NOW(),
-		memberId = #{memberId},
-		boardId =
-		#{boardId},
-		title =
-		#{title},
-		`body` = #{body},
-		imageUrl = #{imageUrl}
-	</insert>
-
-	<delete id="deleteArticle" parameterType="int">
-		DELETE FROM article
-		WHERE id = #{id}
-	</delete>
-
-	<update id="modifyArticle" parameterType="map">
-		UPDATE article
-		<set>
-			<if test="title != null and title != ''">title = #{title},</if>
-			<if test="body != null and body != ''">`body` = #{body},</if>
-			updateDate = NOW()
-		</set>
-		WHERE id = #{id}
-	</update>
-
-	<update id="increaseHitCount" parameterType="int">
-		UPDATE article
-		SET
-		hitCount = hitCount + 1
-		WHERE id = #{id}
-	</update>
-
-	<update id="increaseGoodReactionPoint" parameterType="int">
-		UPDATE
-		article
-		SET
-		goodReactionPoint = goodReactionPoint + 1
-		WHERE id = #{relId}
-	</update>
-
-	<update id="decreaseGoodReactionPoint" parameterType="int">
-		UPDATE
-		article
-		SET goodReactionPoint = goodReactionPoint - 1
-		WHERE id =
-		#{relId}
-	</update>
-
-	<update id="increaseBadReactionPoint" parameterType="int">
-		UPDATE
-		article
-		SET badReactionPoint = badReactionPoint + 1
-		WHERE id = #{relId}
-	</update>
-
-	<update id="decreaseBadReactionPoint" parameterType="int">
-		UPDATE
-		article
-		SET badReactionPoint = badReactionPoint - 1
-		WHERE id = #{relId}
-	</update>
-
-	<select id="getArticleHitCount" parameterType="int">
-		SELECT hitCount
-		FROM article
-		WHERE id = #{id}
-	</select>
-
-	<select id="getArticleCount" parameterType="map">
-		SELECT COUNT(*)
-		FROM article AS A
-		INNER
-		JOIN `member` AS M
-		ON A.memberId =
-		M.id
-		WHERE 1
-		<if test="boardId != 0">
-			AND A.boardId = #{boardId}
-		</if>
-		<if test="searchKeyword != ''">
-			<choose>
-				<when test="searchKeywordTypeCode == 'title'">
-					AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<when test="searchKeywordTypeCode == 'body'">
-					AND A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<when test="searchKeywordTypeCode == 'nickname'">
-					AND M.nickname LIKE CONCAT('%', #{searchKeyword},
-					'%')
-				</when>
-				<otherwise>
-					AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
-					OR
-					A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
-				</otherwise>
-			</choose>
-		</if>
-	</select>
-
-	<select id="getLastInsertId" parameterType="int">
-		SELECT
-		LAST_INSERT_ID()
-	</select>
+		loginId = #{loginId}, loginPw = #{loginPw}, `name` = #{name}, nickname = #{nickname}, cellphone = #{cellphone}, email = #{email}, address = #{address}, authName = #{authName}, authLevel = #{authLevel}
+    </insert>
 
 
-	<select id="getForPrintArticle" parameterType="int"
-		resultType="com.example.RSW.vo.Article">
-		SELECT A.*, M.nickname AS extra__writer
-		FROM article AS A
-		INNER JOIN `member` AS M
-		ON A.memberId = M.id
-		WHERE A.id = #{id}
-	</select>
+    <select id="getLastInsertId" parameterType="int">
+        SELECT LAST_INSERT_ID()
+    </select>
 
-	<select id="getArticleById" parameterType="int"
-		resultType="com.example.RSW.vo.Article">
-		SELECT *
-		FROM article
-		WHERE id =#{id}
-	</select>
+    <select id="getMemberByNameAndEmail" parameterType="string"
+            resultType="com.example.RSW.vo.Member">
+        SELECT *
+        FROM `member`
+        WHERE `name` = #{name}
+          AND email = #{email}
+    </select>
 
-	<select id="getForPrintArticles"
-		resultType="com.example.RSW.vo.Article">
-		SELECT A.*, M.nickname AS extra__writer, IFNULL(COUNT(R.id),0) AS
-		extra__repliesCount
-		FROM article AS A
-		INNER JOIN
-		`member` AS M
-		ON
-		A.memberId = M.id
-		LEFT JOIN `reply` AS R
-		ON A.id = R.relId
-		WHERE 1
-		<if test="boardId != 0">
-			AND boardId = #{boardId}
-		</if>
-		<if test="searchKeyword != ''">
-			<choose>
-				<when test="searchKeywordTypeCode == 'title'">
-					AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<when test="searchKeywordTypeCode == 'body'">
-					AND A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<when test="searchKeywordTypeCode == 'nickname'">
-					AND M.nickname LIKE CONCAT('%', #{searchKeyword},
-					'%')
-				</when>
-				<otherwise>
-					AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
-					OR
-					A.`body` LIKE CONCAT('%', #{searchKeyword}, '%')
-				</otherwise>
-			</choose>
-		</if>
-		GROUP BY A.id
-		ORDER BY A.id
-		DESC
-		<if test="limitFrom >= 0">
-			LIMIT #{limitFrom}, #{limitTake}
-		</if>
-	</select>
-
-	<select id="getArticles" resultType="com.example.RSW.vo.Article">
-		SELECT A.*, M.nickname AS
-		extra__writer
-		FROM article AS A
-		INNER JOIN `member` AS M
-		ON A.memberId =
-		M.id
-		ORDER BY A.id
-		DESC
-	</select>
-
-	<select id="getGoodRP">SELECT goodReactionPoint
-		FROM article
-		WHERE id =
-		#{relId}
-	</select>
-	<select id="getBadRP">SELECT badReactionPoint
-		FROM article
-		WHERE id =
-		#{relId}
-	</select>
-
-	<select id="findAll" resultType="Article">
-		SELECT A.*,
-		M.nickname AS
-		extra__writer
-		FROM article AS A
-		INNER JOIN member AS M
-		ON A.memberId =
-		M.id
-		ORDER BY A.id DESC
-	</select>
-
-	<!-- ✅ 크루 게시글 작성 (INSERT) - boardId: 게시판 ID (타입 구분용) - crewId: 작성된 크루 ID 
-		- memberId: 작성자 ID - title, body: 글 제목과 본문 - regDate, updateDate: 현재 시각으로 
-		자동 입력 -->
-	<insert id="insertCrewArticle">
-		INSERT INTO article
-		SET boardId = #{boardId},
-		crewId =
-		#{crewId},
-		memberId = #{memberId},
-		title = #{title},
-		`body` = #{body},
-		imageUrl = #{imageUrl},
-		regDate = NOW(),
-		updateDate = NOW()
-	</insert>
+    <select id="getMemberByLoginId" parameterType="string"
+            resultType="com.example.RSW.vo.Member">
+        SELECT *
+        FROM `member`
+        WHERE loginId = #{loginId}
+    </select>
 
 
-	<!-- ✅ 특정 크루의 게시글 목록 조회 (삭제되지 않은 글만) - crewId: 크루 ID - delStatus = 0: 삭제되지 
-		않은 글만 - 최신순 정렬 (regDate DESC) -->
-
-	<select id="findByCrewId"
-		resultType="com.example.RSW.vo.Article">
-		SELECT A.*, M.nickname AS extra__writer
-		FROM article AS A
-		INNER JOIN member AS M ON A.memberId = M.id
-		WHERE A.crewId = #{crewId}
-		AND A.delStatus = 0
-		ORDER BY A.regDate DESC
-	</select>
+    <select id="getMemberById" parameterType="int"
+            resultType="com.example.RSW.vo.Member">
+        SELECT *
+        FROM `member`
+        WHERE id = #{id}
+    </select>
 
 
-	<!-- ✅ 특정 크루 ID와 게시판 ID에 해당하는 게시글 목록 조회 -->
-	<select id="getArticlesByCrewIdAndBoardId" resultType="Article">
-		SELECT
-		A.*,
-		M.nickname AS extra__writer
-		FROM article AS A
-		INNER JOIN member AS M
-		ON A.memberId = M.id
-		WHERE A.crewId = #{crewId}
-		AND A.boardId =
-		#{boardId}
-		AND A.delStatus = 0
-		ORDER BY A.id DESC
+    <update id="modify">
+        UPDATE `member`
+        <set>
+            <if test="loginPw != null">
+                loginPw = #{loginPw},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="cellphone != null">
+                cellphone = #{cellphone},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="photo != null">
+                photo = #{photo},
+            </if>
+            updateDate = NOW()
+        </set>
+        WHERE id = #{loginedMemberId}
+    </update>
 
-	</select>
+    <update id="modifyWithoutPw">
+        UPDATE `member`
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="cellphone != null">
+                cellphone = #{cellphone},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="photo != null">
+                photo = #{photo},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            updateDate = NOW()
+        </set>
+        WHERE id = #{loginedMemberId}
+    </update>
 
-	<!-- ✅ 크루 카페 홈에서 게시판별 최근 글 목록을 불러오는 쿼리 - crewId: 해당 크루의 ID - boardId: 게시판 
-		ID (예: 공지사항, 자유게시판 등) - delStatus = 0: 삭제되지 않은 글만 조회 - 최신 글 5개만 제한 (LIMIT 
-		#{limit}) -->
-	<!-- @formatter:off -->
-	<select id="getRecentArticlesByCrewAndBoardId"
-		resultType="com.example.RSW.vo.Article">
-		SELECT *
-		FROM article
-		WHERE crewId = #{crewId} AND boardId = #{boardId} AND delStatus = 0
-		ORDER BY id DESC
-		LIMIT #{limit}
-	</select>
-	<!-- @formatter:on -->
+    <delete id="withdraw">
+        DELETE
+        FROM member
+        WHERE id = #{id}
+    </delete>
+
+    <select id="findAll" resultType="com.example.RSW.vo.Member">
+        SELECT *
+        FROM member
+        WHERE delStatus = 0
+        ORDER BY regDate DESC
+    </select>
+
+    <update id="updateAuthLevel">
+        UPDATE member
+        SET authLevel = #{authLevel}
+        WHERE id = #{memberId}
+    </update>
+
+    <select id="getForPrintMembersWithCert"
+            resultType="com.example.RSW.vo.Member">
+        SELECT m.*,
+        v.filePath AS vetCertUrl,
+        v.approved AS vetCertApproved
+        FROM member m
+        LEFT JOIN vet_certificate v ON m.id = v.memberId
+        <where>
+            <if test="searchType != null and searchKeyword != null and searchKeyword != ''">
+                <choose>
+                    <when test="searchType == 'authLevel'">
+                        m.authLevel = #{searchKeyword}
+                    </when>
+                    <when test="searchType == 'loginId'">
+                        m.loginId LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'name'">
+                        m.name LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'id'">
+                        m.id = #{searchKeyword}
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY m.id DESC
+    </select>
+
+    <select id="getNicknameById" parameterType="int" resultType="String">
+        SELECT nickname
+        FROM member
+        WHERE id = #{loginedMemberId}
+    </select>
+
+    <update id="updateVetCertInfo">
+        UPDATE member
+        SET vetCertUrl = #{fileName},
+            vetCertApproved = #{approved}
+        WHERE id = #{memberId}
+    </update>
+
+    <select id="countByAuthLevel" resultType="int">
+        SELECT COUNT(*) FROM member
+        WHERE authLevel = #{authLevel}
+    </select>
+
+    <select id="findByAuthLevel" resultType="com.example.RSW.vo.Member">
+        SELECT *
+        FROM member
+        WHERE authLevel = #{authLevel}
+    </select>
+
+    <select id="getMemberBySocial" resultType="Member">
+        SELECT * FROM member
+        WHERE socialProvider = #{socialProvider}
+          AND socialId = #{socialId}
+    </select>
+
+    <insert id="doJoinBySocial" parameterType="map">
+        INSERT INTO `member`
+        SET regDate = NOW(),
+        updateDate = NOW(),
+        loginId = #{loginId}, loginPw = #{loginPw}, socialProvider = #{socialProvider}, socialId = #{socialId}, `name` = #{name}, nickname = #{name}, -- 카카오 닉네임 그대로 사용
+            email = #{email}, cellphone = '',                                                                                                         -- 기본값 빈 문자열
+            address = '',                                                                                                                             -- 기본값 빈 문자열
+            photo = '',                                                                                                                               -- 기본값 빈 문자열
+            authLevel = 1, authName = '일반회원', delStatus = 0
+    </insert>
 
 
+    <select id="findByEmail" parameterType="string" resultType="Member">
+        SELECT * FROM member WHERE email = #{email}
+    </select>
 
-	<!-- ✅ 일반 공지사항 전용 쿼리 (crewId가 NULL인 게시글만) -->
-	<select id="getNoticeArticlesByBoardId" resultType="Article">
-		SELECT A.*,
-		M.nickname AS extra__writer
-		FROM article AS A
-		INNER JOIN member AS M ON
-		A.memberId = M.id
-		WHERE A.boardId = #{boardId}
-		AND A.delStatus = 0
-		AND
-		A.crewId IS NULL
-		ORDER BY A.id DESC
-		LIMIT #{limit}
-	</select>
-
-	<!-- 일정을 등록하기 -->
-	<insert id="writeSchedule">
-		INSERT INTO article
-		SET
-		boardId = 5,
-		crewId = #{crewId},
-		memberId = #{loginedMemberId},
-		title = #{scheduleTitle},
-		body = #{scheduleBody},
-		regDate = NOW(),
-		updateDate = NOW(),
-		scheduleDate = #{scheduleDate}
-	</insert>
-
-
-	<!-- 일정 리스트 불러오기 -->
-	<select id="getSchedulesByCrewId" resultType="map">
-		SELECT
-		A.scheduleDate, A.title, A.body
-		FROM article AS A
-		WHERE A.crewId =
-		#{crewId}
-		AND A.scheduleDate IS NOT NULL
-		ORDER BY A.scheduleDate DESC
-	</select>
-
-
-
-	<!-- ✅ 관리자 전용 공지사항 게시글 개수 조회 -->
-	<!-- boardId = 1인 전체 공지사항 게시판에서 authLevel = 7(관리자)이 작성한 게시글만 카운트 -->
-
-	<!-- ✅ 관리자 공지 개수 -->
-	<select id="getAdminOnlyArticleCount" resultType="int">
-		SELECT COUNT(*)
-		FROM article
-		WHERE boardId = #{boardId}
-		AND delStatus = 0
-		AND memberId IN (
-		SELECT id FROM member WHERE authLevel = 7
-		)
-		<if test="searchKeyword != ''">
-			<choose>
-				<when test="searchKeywordTypeCode == 'title'">
-					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<when test="searchKeywordTypeCode == 'body'">
-					AND body LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-			</choose>
-		</if>
-	</select>
-
-	<!-- ✅ 관리자 공지 목록 -->
-	<select id="getAdminOnlyArticles" resultType="Article">
-		SELECT *
-		FROM article
-		WHERE boardId = #{boardId}
-		AND delStatus = 0
-		AND
-		memberId IN (
-		SELECT id FROM member WHERE authLevel = 7
-		)
-		<if test="searchKeyword != ''">
-			<choose>
-				<when test="searchKeywordTypeCode == 'title'">
-					AND title LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-				<when test="searchKeywordTypeCode == 'body'">
-					AND body LIKE CONCAT('%', #{searchKeyword}, '%')
-				</when>
-			</choose>
-		</if>
-		ORDER BY id DESC
-		LIMIT #{limitStart}, #{itemsInAPage}
-	</select>
+    <insert id="insert" parameterType="Member">
+        INSERT INTO member
+        (regDate, updateDate, loginId, loginPw, name, email, authLevel, delStatus, socialProvider, socialId)
+        VALUES
+            (#{regDate}, #{updateDate}, #{loginId}, #{loginPw}, #{name}, #{email}, #{authLevel}, #{delStatus}, #{socialProvider}, #{socialId})
+    </insert>
 
 
 
