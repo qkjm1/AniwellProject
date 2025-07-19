@@ -235,23 +235,7 @@
 		AND A.delStatus = 0
 		ORDER BY A.regDate DESC
 	</select>
-	<!-- ✅ 크루 카페 홈에서 게시판별 최근 글 목록을 불러오는 쿼리 - crewId: 해당 크루의 ID - boardId: 게시판 
-		ID (예: 공지사항, 자유게시판 등) - delStatus = 0: 삭제되지 않은 글만 조회 - 최신 글 5개만 제한 (LIMIT 
-		#{limit}) -->
-	<!-- @formatter:off -->
-	<select id="getRecentArticlesByCrewAndBoardId"
-		resultType="com.example.RSW.vo.Article">
-		SELECT *
-		FROM article
-		WHERE crewId = #{crewId}
-<<<<<<< HEAD
-		AND boardId =
-		#{boardId}
-		AND delStatus = 0
-		ORDER BY id DESC
-		LIMIT #{limit}
-	</select>
-	<!-- @formatter:on -->
+
 
 	<!-- ✅ 특정 크루 ID와 게시판 ID에 해당하는 게시글 목록 조회 -->
 	<select id="getArticlesByCrewIdAndBoardId" resultType="Article">
@@ -266,11 +250,7 @@
 		#{boardId}
 		AND A.delStatus = 0
 		ORDER BY A.id DESC
-=======
-		AND delStatus =
-		0
-		ORDER BY regDate DESC
->>>>>>> 06fc6dd (구글 연동 끝)
+
 	</select>
 
 	<!-- ✅ 크루 카페 홈에서 게시판별 최근 글 목록을 불러오는 쿼리 - crewId: 해당 크루의 ID - boardId: 게시판 

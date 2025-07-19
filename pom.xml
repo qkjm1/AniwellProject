@@ -178,6 +178,7 @@
             <version>1.36.0</version>
         </dependency>
 
+
         <!-- Google OAuth -->
         <dependency>
             <groupId>com.google.api-client</groupId>
@@ -194,9 +195,8 @@
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
-
-    </dependencies>
-
+        
+        
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -215,6 +215,10 @@
 			<version>4.1.109.Final</version>
 			<classifier>osx-aarch_64</classifier> <!-- 또는 osx-x86_64 -->
 		</dependency>
+
+
+
+    </dependencies>
 
 
     <build>

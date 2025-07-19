@@ -232,20 +232,17 @@ public class UsrMemberController {
 
     // 마이페이지
     @RequestMapping({"/usr/member/myPage", "/usr/member/mypage"})
-    @ResponseBody
-    public Member showMyPage(HttpServletRequest req) {
+    public String showMyPage(HttpServletRequest req, Model model) {
 
         Rq rq = (Rq) req.getAttribute("rq");
         Member loginedMember = rq.getLoginedMember();
 
+        VetCertificate cert = vetCertificateService.getCertificateByMemberId(loginedMember.getId());
+        model.addAttribute("cert", cert);
 
-<<<<<<< HEAD
-        return loginedMember;
-=======
         model.addAttribute("member", loginedMember);
 
         return "usr/member/myPage";
->>>>>>> 06fc6dd (구글 연동 끝)
     }
 
     @RequestMapping("/usr/member/checkPw")
@@ -721,8 +718,6 @@ public class UsrMemberController {
         }
     }
 
-<<<<<<< HEAD
-=======
     @RequestMapping("/usr/member/google")
     public String googleCallback(@RequestParam("code") String code, HttpServletRequest req, HttpServletResponse resp) {
 
@@ -781,6 +776,7 @@ public class UsrMemberController {
             return "redirect:/usr/member/login?error=google";
         }
     }
->>>>>>> 06fc6dd (구글 연동 끝)
+
+
 
 }
