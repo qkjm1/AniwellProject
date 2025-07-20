@@ -113,7 +113,7 @@ public class UsrCrewCafeController {
 		model.addAttribute("galleryArticles", galleryArticles);
 		model.addAttribute("scheduleArticles", scheduleArticles);
 
-		return "usr/crewCafe/cafeHome";
+		return "usr/walkCrew/detail";
 	}
 
 	// ✅ 내가 가입한 크루의 카페로 이동
@@ -138,6 +138,28 @@ public class UsrCrewCafeController {
 
 		return "redirect:/usr/crewCafe/cafeHome?crewId=" + myCrew.getId(); // ✅ 요거만 바꾸면 됨
 	}
+	
+	// ✅ 내가 가입한 크루의 카페로 이동
+		@GetMapping("/apiMyCrewCafe")
+		public ResultData apiGoToMyCrewCafe(HttpServletRequest req) {
+			Rq rq = (Rq) req.getAttribute("rq");
+			int memberId = rq.getLoginedMemberId();
+
+			WalkCrew myCrew = walkCrewService.getCrewByLeaderId(memberId);
+			if (myCrew == null) {
+				myCrew = walkCrewMemberService.getMyCrew(memberId);
+			}
+
+			if (myCrew == null) {
+				return ResultData.from("F-1", "크루를 신청해 봅시다!");
+			}
+
+			// ✅ 이렇게 수정!
+			
+			List<Article> articles = articleService.getArticlesByCrewId(myCrew.getId());
+
+			return ResultData.from("S-1", "크루가져오기", "myCrew", myCrew, "articles", articles);
+		}
 
 	/*
 	 * @PostMapping("/uploadImage")

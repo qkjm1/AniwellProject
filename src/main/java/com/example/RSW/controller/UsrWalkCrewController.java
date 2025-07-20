@@ -105,7 +105,7 @@ public class UsrWalkCrewController {
 		walkCrew.setLeaderId(rq.getLoginedMemberId()); // ✅ 로그인된 사용자 ID 주입
 		walkCrewService.createCrew(walkCrew);// 서비스 호출하여 DB에 저장
 
-		return "redirect:/usr/walkCrew/list";
+		return "usr/walkCrew/closeModal";
 	}
 
 	// 크루 상세보기 페이지

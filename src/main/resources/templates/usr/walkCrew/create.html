@@ -1,121 +1,102 @@
+<!DOCTYPE html>
 <html>
 
 <head>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.tailwindcss.com"></script>
 	<title>크루 등록</title>
 
-
-	<style>
-		label {
-			font-weight: bold;
-			display: block;
-			margin-top: 15px;
-		}
-
-		input[type="text"],
-		textarea {
-			width: 100%;
-			padding: 10px;
-			margin-top: 5px;
-		}
-
-		button[type="submit"] {
-			margin-top: 20px;
-			padding: 10px 20px;
-			background-color: #4CAF50;
-			color: white;
-			border: none;
-			border-radius: 5px;
-			cursor: pointer;
-		}
-
-		.dong-list {
-			margin-top: 10px;
-		}
-
-		.dong-list button {
-			margin: 5px;
-			padding: 5px 10px;
-		}
-	</style>
 </head>
 
-<body>
-	<form action="/usr/walkCrew/doCreate" method="post">
-		<div class="flex">
+<body class="w-screen">
+	<div class="h-full w-full flex justify-center items-start p-6">
+		<form class="w-full max-w-[600px] space-y-6" action="/usr/walkCrew/doCreate" method="post"
+			onsubmit="return validateForm()">
+
+			<!-- 제목 -->
 			<div>
-			<div class="text-xl w-full font-bold border-b pb-4">
-				<h2>🚀 새 크루 등록</h2>
+				<label class="font-semibold block mb-2">크루 이름</label>
+				<input type="text" name="title" required
+					class="w-full rounded-md shadow-sm border border-yellow-100 p-2" />
 			</div>
 
-			<label>제목</label>
-			<input type="text" name="title" required />
-
-			<label>설명</label>
-			<textarea name="description" rows="5" required></textarea>
-
-
-			<label>동 선택</label>
+			<!-- 설명 -->
 			<div>
-				현재 위치:
-				<span id="currentLocation">확인 중...</span>
+				<label class="font-semibold block mb-2">소개</label>
+				<textarea name="description" rows="5" required
+					class="w-full rounded-md shadow-sm border border-yellow-100 p-2"></textarea>
 			</div>
 
-			<div class="dong-list" id="dongListContainer"></div>
+			<!-- 동 선택 -->
+			<div>
+				<label class="font-semibold block mb-2">지역</label>
+				<div class="mb-2">현재 위치: <span id="currentLocation">확인 중...</span></div>
+				<div class="dong-list" id="dongListContainer"></div>
+				<input type="hidden" name="selectedDong" id="selectedDong" />
+				<input type="hidden" name="districtId" id="districtIdInput" />
+			</div>
 
-			<input type="hidden" name="selectedDong" id="selectedDong" />
-			<input type="hidden" name="districtId" id="districtIdInput" />
+			<!-- 등록 버튼 -->
+			<div class="text-right pt-6">
+				<button type="submit"
+					class="px-6 py-2 bg-gradient-to-r from-green-200 to-yellow-200 rounded-full shadow">완료</button>
+			</div>
+		</form>
+	</div>
 
 
-			<button type="submit">등록</button>
-		</div>
-	</form>
-	<script>
-		function loadKakaoMap(callback) {
-			const script = document.createElement("script");
-			script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoJsKey}&autoload=false&libraries=services";
-			script.onload = () => {
-				kakao.maps.load(callback);
-			};
-			document.head.appendChild(script);
+
+
+	<!-- ✅ 수정: JavaScript 키 삽입 -->
+	<script th:inline="javascript">
+		const kakaoJsKey = /*[[${kakaoJsKey}]]*/ "";
+		const script = document.createElement("script");
+		script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoJsKey}&autoload=false&libraries=services`;
+		script.onload = () => {
+			kakao.maps.load(initLocation);
+		};
+		document.head.appendChild(script);
+		let selectedCity = "";
+		let selectedDiFrict = "";
+
+
+		function initLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function (position) {
+					const lat = position.coords.latitude;
+					const lng = position.coords.longitude;
+
+					const geocoder = new kakao.maps.services.Geocoder();
+					geocoder.coord2RegionCode(lng, lat, function (result, status) {
+						if (status === kakao.maps.services.Status.OK) {
+							for (let i = 0; i < result.length; i++) {
+								if (result[i].region_type === "B") {
+									const fullAddr = result[i].address_name;
+									document.getElementById("currentLocation").innerText = fullAddr;
+
+									const parts = fullAddr.split(" ");
+									if (parts.length >= 3) {
+										selectedCity = parts[0];
+										selectedDistrict = parts[1];
+										loadDongList(selectedCity, selectedDistrict);
+									}
+									break;
+								}
+							}
+						} else {
+							document.getElementById("currentLocation").innerText = "위치 정보 불러오기 실패";
+						}
+					});
+				}, function () {
+					document.getElementById("currentLocation").innerText = "위치 접근 거부됨";
+				});
+			} else {
+				document.getElementById("currentLocation").innerText = "GPS를 지원하지 않는 브라우저입니다.";
+			}
 		}
 
-		window.onload = function () {
-			loadKakaoMap(function () {
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(function (position) {
-						const lat = position.coords.latitude;
-						const lng = position.coords.longitude;
-
-						const geocoder = new kakao.maps.services.Geocoder();
-						geocoder.coord2RegionCode(lng, lat, function (result, status) {
-							if (status === kakao.maps.services.Status.OK) {
-								for (let i = 0; i < result.length; i++) {
-									if (result[i].region_type === "B") {
-										const fullAddr = result[i].address_name;
-										document.getElementById("currentLocation").innerText = fullAddr;
-
-										const parts = fullAddr.split(" ");
-										if (parts.length >= 3) {
-											const city = parts[0];
-											const district = parts[1];
-
-											loadDongList(city, district);
-										}
-										break;
-									}
-								}
-							} else {
-								document.getElementById("currentLocation").innerText = "위치 정보 불러오기 실패";
-							}
-						});
-					}, function (error) {
-						document.getElementById("currentLocation").innerText = "위치 접근 거부됨";
-					});
-				} else {
-					document.getElementById("currentLocation").innerText = "GPS를 지원하지 않는 브라우저입니다.";
-				}
-			});
-		};
 
 		function loadDongList(city, district) {
 			const url = "/usr/walkCrew/getDongs?city=" + encodeURIComponent(city) + "&district=" + encodeURIComponent(district);
@@ -143,12 +124,15 @@
 							});
 							btn.style.backgroundColor = "#ddd";
 
-							// ✅ 선택한 동으로부터 districtId 조회
-							fetch("/usr/walkCrew/getDistrictId?dong=" + encodeURIComponent(dong))
+							fetch("/usr/walkCrew/getDistrictId"
+								+ "?city=" + encodeURIComponent(selectedCity)
+								+ "&district=" + encodeURIComponent(selectedDistrict)
+								+ "&dong=" + encodeURIComponent(dong))
 								.then(response => response.text())
 								.then(districtId => {
 									document.getElementById("districtIdInput").value = districtId;
 								});
+
 						};
 						container.appendChild(btn);
 					});
@@ -158,7 +142,27 @@
 					console.error("Error loading dongs:", err);
 				});
 		}
+
+		function validateForm() {
+			const districtId = document.getElementById("districtIdInput").value;
+			if (!districtId || isNaN(districtId)) {
+				alert("동을 선택해주세요.");
+				return false;
+			}
+			return true;
+		}
 	</script>
+
+	<script>
+		// 등록 후 서버에서 redirect될 경우, 이 스크립트가 실행됨
+		window.addEventListener('DOMContentLoaded', () => {
+			if (window.parent && window.parent.closeModal) {
+				window.parent.loadCrewList(); // 리스트 갱신
+				window.parent.closeModal();   // 모달 닫기
+			}
+		});
+	</script>
+
 
 </body>
 

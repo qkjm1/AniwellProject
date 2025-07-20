@@ -1,86 +1,138 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<!DOCTYPE html>
 <html>
+
 <head>
-<title>크루 상세보기</title>
-<style>
-.container {
-	width: 60%;
-	margin: 30px auto;
-	border: 1px solid #ccc;
-	padding: 20px;
-	border-radius: 10px;
-}
-
-h2 {
-	margin-top: 0;
-}
-
-.field {
-	margin: 15px 0;
-}
-
-.label {
-	font-weight: bold;
-}
-
-.back-link {
-	margin-top: 20px;
-	display: block;
-}
-
-button[type="submit"] {
-	padding: 8px 16px;
-	background-color: #4CAF50;
-	color: white;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-	margin-top: 10px;
-}
-</style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" th:href="@{/resource/css/common.css}">
+	<title>크루 모집 목록</title>
 </head>
-<body>
 
-	<div class="container">
-		<h2>📌 크루 상세정보</h2>
+<body class="bg-gradient-to-b from-[#e4f0b9] to-[#fcdca9] font-sans ">
+	<div class="flex h-screen">
+		<!-- Sidebar -->
+		<div th:replace="common :: siteHeader"></div>
 
-		<div class="field">
-			<div class="label">제목:</div>
-			<div>${crew.title}</div>
-		</div>
-
-		<div class="field">
-			<div class="label">설명:</div>
-			<div>${crew.description}</div>
-		</div>
-
-		<div class="field">
-			<div class="label">지역:</div>
-			<div>${crewLocation}</div>
-			<!-- ✔️ 예: 서울특별시 종로구 청운동 -->
-		</div>
+		<!-- Main content -->
+		<main class="main_page min-h-screen flex-1 p-3 flex contect-around">
 
 
-		<div class="field">
-			<div class="label">작성일:</div>
-			<div>
-				<fmt:formatDate value="${createdDate}" pattern="yyyy-MM-dd HH:mm:ss" />
+			<!-- 왼쪽: 정보 섹션 -->
+			<aside class="w-1/4 space-y-1 p-6 grid grid-rows-6 h-[100%] ">
+				<div class="row-span-3 ">
+					<a href="/usr/walkCrew/list" class="back-link">← 목록으로 돌아가기</a>
+					<div class="flex space-y-2 items-center gap-3">
+						<div class="w-12 h-12 bg-gray-300 rounded-full"></div>
+						<div class="p-3">
+							<h2 class="text-xl font-semibold" th:text="${crew.title}">크루원들 모여라</h2>
+							<p class="text-sm text-gray-500">멤버 111</p>
+						</div>
+					</div>
+
+					<div class="text-sm text-gray-700" th:text="${crew.description}">
+						Lorem ipsum dolor, sit amet consectetur adipisicing elit...
+					</div>
+
+					<div class="flex gap-2 text-sm text-gray-600 py-5">
+						<div class="bg-gray-200 rounded-full px-3 py-1" th:text="${crew.city}">시</div>
+						<div class="bg-gray-200 rounded-full px-3 py-1" th:text="${crew.district}">구</div>
+						<div class="bg-gray-200 rounded-full px-3 py-1" th:text="${crew.dong}">동</div>
+					</div>
+				</div>
+				<div class="shadow row-sapn-3 h-[40vh]">
+					<div th:each="article : ${noticeArticles}" class="p-4 border-b">
+						<div class="text-sm text-gray-500" th:text="'작성자 ID: ' + ${article.memberId}"></div>
+						<div class="text-lg font-bold text-gray-800" th:text="${article.title}">제목</div>
+						<div class="text-sm text-gray-700 mt-1" th:text="${article.body}">내용</div>
+					</div>
+				</div>
+
+			</aside>
+
+			<!-- 오른쪽: 콘텐츠 섹션 -->
+			<div class="flex-1 space-y-6 h-[100%] flex flex-col p-6 ">
+				<!-- 앨범 -->
+				<div class="py-2 flex-1">
+					<div class="flex justify-between items-center mb-2">
+						<h3 class="font-bold text-lg">앨범</h3>
+						<button class="text-gray-600 hover:text-black">추가 ＋</button>
+					</div>
+					<div class="flex gap-4 overflow-x-auto">
+						<div class="w-24 h-24 bg-gray-300 rounded-lg"></div>
+						<div class="w-24 h-24 bg-gray-300 rounded-lg"></div>
+						<div class="w-24 h-24 bg-gray-300 rounded-lg"></div>
+					</div>
+				</div>
+
+				<!-- 멤버 -->
+				<div class="py-2 flex-1">
+					<h3 class="font-bold text-lg mb-2">멤버 8</h3>
+					<div class="flex gap-4 overflow-x-auto">
+						<div class=" flex flex-col">
+							<div class="w-12 h-12 bg-gray-300 rounded-full"></div>
+							<div class="p-1">닉네임</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 일정 -->
+				<div class="py-2 flex-1">
+					<div class="flex justify-between items-center mb-2">
+						<h3 class="font-bold text-lg">일정 15</h3>
+						<button class="text-gray-600 hover:text-black">추가 ＋</button>
+					</div>
+					<div class="flex gap-4 overflow-x-auto">
+						<div class="text-center">
+							<div class="text-sm font-bold">7월<br>07</div>
+							<div class="text-xs text-gray-500">크루 모임 날</div>
+						</div>
+						<div class="text-center">
+							<div class="text-sm font-bold">7월<br>06</div>
+							<div class="text-xs text-gray-500">아침</div>
+						</div>
+						<div class="text-center">
+							<div class="text-sm font-bold">7월<br>05</div>
+							<div class="text-xs text-gray-500">아침</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 게시글 -->
+				<div class="py-2 flex-1">
+					<div class="flex justify-between items-center mb-2">
+						<h3 class="font-bold text-lg" th:text="${freeArticles.size}">게시글 13</h3>
+					</div>
+					<div class="grid grid-cols-3 gap-4">
+						<div class="bg-white rounded shadow p-2">
+							<img src="https://via.placeholder.com/150" class="w-full rounded" />
+							<h4 class="font-semibold mt-2">게시글 제목</h4>
+							<p class="text-sm text-gray-500">게시글 내용</p>
+							<div class="flex justify-between mt-2 text-gray-400 text-sm">
+								<span>❤️</span>
+								<span>💬</span>
+							</div>
+						</div>
+
+						<!-- 복사해서 반복 -->
+						<div class="bg-white rounded shadow p-2"> ... </div>
+						<div class="bg-white rounded shadow p-2"> ... </div>
+					</div>
+
+					<!-- 추가 버튼 -->
+					<div class="flex justify-end mt-4">
+						<button
+							class="w-10 h-10 bg-green-200 rounded-full text-xl font-bold shadow hover:bg-green-300">＋</button>
+					</div>
+				</div>
 			</div>
-		</div>
-
-		<!-- 참가 버튼 -->
-		<c:if test="${not empty rq.loginedMemberId}">
-			<form method="post" action="/usr/walkCrew/join">
-				<input type="hidden" name="crewId" value="${crew.id}" />
-				<button type="submit">🙋 참가하기</button>
-			</form>
-		</c:if>
-
-		<a href="/usr/walkCrew/list" class="back-link">← 목록으로 돌아가기</a>
+		</main>
 	</div>
 
+	<script>
+
+
+	</script>
 </body>
+
 </html>

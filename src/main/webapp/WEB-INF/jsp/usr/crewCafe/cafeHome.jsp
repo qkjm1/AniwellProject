@@ -135,13 +135,7 @@ ul.article-preview img {
 				<c:forEach var="article" items="${noticeArticles}">
 					<li>
 						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title}
-							(${fn:substring(article.regDate, 0, 10)}) </a>
-=======
-				<c:forEach var="article" items="${noticeArticles}" begin="0" end="0">
-					<li>
-						<a href="/usr/article/detail?id=${article.id}&crewId=${crew.id}"> ${article.title} (
-							${fn:substring(article.regDate, 0, 10)} ) </a>
->>>>>>> 06fc6dd (구글 연동 끝)
+							(${fn:substring(article.regDate, 0, 10)}) </a
 					</li>
 				</c:forEach>
 				<c:if test="${empty noticeArticles}">

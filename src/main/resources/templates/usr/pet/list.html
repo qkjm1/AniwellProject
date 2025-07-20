@@ -259,8 +259,17 @@
 
 			const root = ReactDOM.createRoot(document.getElementById("root"));
 			root.render(<App />);
+		
 		</script>
 
+		<script>
+		  window.addEventListener('message', function(event) {
+		    if (event.data.type === 'CREW_CLICKED') {
+		      const crewId = event.data.data.crewId;
+		      location.href = `/usr/crewCafe/cafeHome?crewId=${crewId}`;
+		    }
+		  });
+		</script>
 
 
 
